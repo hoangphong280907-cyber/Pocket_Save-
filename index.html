@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#2563EB">
+
+<link rel="apple-touch-icon"
+href="icon-192.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Pocket Save - Thói quen tiết kiệm mỗi ngày</title>
+    <meta name="description" content="Pocket Save giúp bạn xây dựng thói quen tiết kiệm mỗi ngày một cách đơn giản và hiệu quả.">
+    <meta name="theme-color" content="#2563EB">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Pocket Save">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <style>
+        :root {
+            --bg: #F8FAFC;
+            --card: #FFFFFF;
+            --surface: #F1F5F9;
+            --text: #111827;
+            --secondary: #6B7280;
+            --primary: #2563EB;
+            --primary-hover: #1D4ED8;
+            --success: #16A34A;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            --border: #E5E7EB;
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --shadow-color: rgba(0, 0, 0, 0.07);
+            --chart-bg: #F1F5F9;
+            --badge-bg: #F0FDF4;
+            --badge-text: #16A34A;
+            --dropdown-bg: #FFFFFF;
+            --hover-bg: #F9FAFB;
+            --input-bg: #FFFFFF;
+            --tooltip-bg: #111827;
+            --tooltip-text: #FFFFFF;
+            --envelope-top: #F1F5F9;
+            --envelope-bottom: #E8ECF4;
+            --envelope-border: #CBD5E1;
+            --radius: 16px;
+            --shadow-sm: 0 1px 2px var(--shadow-color);
+            --shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px var(--shadow-color);
+            --shadow-lg: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -4px var(--shadow-color);
+            --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --bg: #0F172A;
+            --card: #1E293B;
+            --surface: #334155;
+            --text: #F1F5F9;
+            --secondary: #94A3B8;
+            --primary: #3B82F6;
+            --primary-hover: #2563EB;
+            --success: #22C55E;
+            --danger: #EF4444;
+            --danger-hover: #DC2626;
+            --border: #334155;
+            --nav-bg: rgba(15, 23, 42, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --chart-bg: #334155;
+            --badge-bg: #064E3B;
+            --badge-text: #22C55E;
+            --dropdown-bg: #1E293B;
+            --hover-bg: #334155;
+            --input-bg: #0F172A;
+            --tooltip-bg: #F1F5F9;
+            --tooltip-text: #0F172A;
+            --envelope-top: #334155;
+            --envelope-bottom: #1E293B;
+            --envelope-border: #475569;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { -webkit-tap-highlight-color: transparent; }
+        body { -webkit-tap-highlight-color: transparent; }
+
+        .card, .card-title, .card-subtitle, .btn, .stat-card, .stat-card .stat-title, .stat-card .stat-value, .stat-card .stat-desc,
+        .goal-card-item, .goal-card-item .gci-name, .insight-card, .insight-card .insight-value, .insight-card .insight-label,
+        .journal-record .jr-date, .journal-record .jr-label, .section-header, .section-title, .header h1, .motivational-text,
+        .empty-state, .allocation-item .al-name, .bottom-sheet h3, .nav-item, .month-selector, .month-picker-item {
+            user-select: none; -webkit-user-select: none;
+        }
+        input, textarea, .search-input, .alloc-input { user-select: text; -webkit-user-select: text; }
+
+        body {
+            font-family: var(--font);
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+            padding-left: env(safe-area-inset-left, 0px);
+            padding-right: env(safe-area-inset-right, 0px);
+            position: relative;
+        }
+
+        .header { text-align: center; padding: 4px 0; }
+        .header h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; color: var(--text); margin-bottom: 2px; transition: color 0.3s ease; }
+        .header .date-info { font-size: 13px; color: var(--secondary); font-weight: 500; transition: color 0.3s ease; }
+        .header .date-info .day-name { font-weight: 600; color: var(--text); }
+        .theme-toggle { background: none; border: none; font-size: 20px; cursor: pointer; padding: 4px 8px; transition: transform 0.3s ease; -webkit-tap-highlight-color: transparent; }
+        .theme-toggle:active { transform: scale(0.85); }
+
+        .page { animation: pageFadeIn 0.25s ease; }
+        @keyframes pageFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { background: var(--card); border-radius: var(--radius); padding: 22px 20px; box-shadow: var(--shadow-lg); text-align: center; transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.3s ease; border: 1px solid var(--border); min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .card-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; letter-spacing: -0.3px; transition: color 0.3s ease; }
+        .card-subtitle { font-size: 13px; color: var(--secondary); margin-bottom: 20px; line-height: 1.4; transition: color 0.3s ease; }
+
+        .envelope-wrapper { position: relative; width: 140px; height: 130px; margin: 0 auto 20px; cursor: pointer; transition: transform 0.2s ease; -webkit-tap-highlight-color: transparent; }
+        .envelope-wrapper:active { transform: scale(0.97); }
+        .envelope { position: relative; width: 100%; height: 100%; }
+        .envelope-body { position: absolute; bottom: 10px; left: 0; width: 100%; height: 70px; background: linear-gradient(135deg, var(--envelope-bottom), #DCE1EB); border-radius: 10px; border: 2px solid var(--envelope-border); z-index: 2; transition: background 0.3s ease, border-color 0.3s ease; }
+        .envelope-letter { position: absolute; top: 50%; left: 15%; width: 100px; right: 12px; height: 55px; background: white; border-radius: 6px; z-index: 1; display: flex; align-items: center; justify-content: center; transform: translateY(-50%, -60%); transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 2px 8px rgba(0,0,0,0.1); border: 1px solid #E5E7EB; }
+        .envelope-letter.revealed { transform: translate(0, -150%); z-index: 3; }
+        .envelope-letter-text { font-size: 11px; font-weight: 700; color: var(--primary); letter-spacing: 0.5px; text-transform: uppercase; }
+        .envelope-flap { position: absolute; top: 50px; left: 0; width: 100%; height: 60px; background: linear-gradient(135deg, var(--envelope-top), #E2E8F0); border-radius: 10px 10px 0 0; border: 2px solid var(--envelope-border); border-bottom: none; z-index: 4; transform-origin: top center; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease; clip-path: polygon(0 0, 50% 65%, 100% 0); }
+        .envelope-flap.open { transform: rotateX(180deg); }
+        .envelope-seal { position: absolute; top: 65%; left: 50%; transform: translate(-50%, -50%); width: 28px; height: 28px; background: var(--primary); border-radius: 50%; z-index: 5; box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3); display: flex; align-items: center; justify-content: center; transition: opacity 0.3s ease; }
+        .envelope-seal.hidden { opacity: 0; pointer-events: none; }
+        .envelope-seal::after { content: '✦'; color: white; font-size: 15px; }
+
+        .target-display { animation: fadeInUp 0.5s ease; }
+        .target-label { font-size: 12px; font-weight: 600; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; transition: color 0.3s ease; }
+        .target-amount { font-size: 42px; font-weight: 800; color: var(--text); letter-spacing: -1.5px; line-height: 1; margin-bottom: 2px; transition: color 0.4s ease; }
+        .target-currency { font-size: 14px; font-weight: 600; color: var(--secondary); transition: color 0.4s ease; }
+
+        .completed-display { animation: fadeInUp 0.5s ease; width: 100%; }
+        .completed-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); transition: border-color 0.3s ease; }
+        .completed-row:last-of-type { border-bottom: none; }
+        .completed-label { font-size: 13px; color: var(--secondary); font-weight: 500; transition: color 0.3s ease; }
+        .completed-value { font-size: 15px; font-weight: 700; color: var(--text); transition: color 0.3s ease; }
+        .completed-badge { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-top: 12px; transition: background 0.3s ease, color 0.3s ease; }
+        .completed-badge.success { background: var(--badge-bg); color: var(--badge-text); }
+        .completed-badge.recorded { background: #EFF6FF; color: var(--primary); }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 12px 24px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease; font-family: var(--font); letter-spacing: -0.2px; width: 100%; max-width: 260px; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; transform: none !important; box-shadow: none !important; }
+        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); transition: background 0.3s ease; }
+        .btn-primary:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3); }
+        .btn-success { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3); transition: background 0.3s ease; }
+        .btn-success:active { transform: translateY(0); }
+        .btn-outline { background: var(--card); color: var(--text); border: 1.5px solid var(--border); transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-sm { padding: 8px 14px; font-size: 13px; border-radius: 8px; max-width: none; width: auto; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 16px; animation: fadeIn 0.2s ease; }
+        .modal { background: var(--card); border-radius: var(--radius); padding: 28px 24px; width: 100%; max-width: 400px; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15); text-align: center; animation: scaleIn 0.25s cubic-bezier(0.4, 0, 0.2, 1); transition: background 0.3s ease; }
+        .modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.3px; color: var(--text); transition: color 0.3s ease; }
+        .modal p { font-size: 14px; color: var(--secondary); margin-bottom: 20px; line-height: 1.5; transition: color 0.3s ease; }
+        .modal input, .modal textarea, .modal select { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; font-weight: 500; font-family: var(--font); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, color 0.3s ease; margin-bottom: 12px; text-align: left; background: var(--input-bg); color: var(--text); }
+        .modal input:focus, .modal textarea:focus, .modal select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .modal textarea { resize: vertical; min-height: 60px; }
+        .modal input::placeholder, .modal textarea::placeholder { color: #9CA3AF; font-weight: 400; font-size: 14px; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 12px; }
+        .modal-buttons .btn { flex: 1; max-width: none; padding: 12px 16px; font-size: 14px; }
+
+        .emoji-picker { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 12px; }
+        .emoji-option { width: 40px; height: 40px; border-radius: 10px; border: 1.5px solid var(--border); background: var(--card); font-size: 20px; cursor: pointer; transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+        .emoji-option.selected { border-color: var(--primary); background: #EFF6FF; }
+        .emoji-option:active { transform: scale(0.9); }
+
+        .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); display: flex; align-items: flex-end; justify-content: center; z-index: 100; animation: fadeIn 0.2s ease; }
+        .bottom-sheet { background: var(--card); border-radius: 20px 20px 0 0; padding: 24px 20px 32px; width: 100%; max-width: 480px; max-height: 85vh; overflow-y: auto; box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.12); animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1); transition: background 0.3s ease; }
+        .bottom-sheet h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; text-align: center; color: var(--text); transition: color 0.3s ease; }
+        .bottom-sheet .bs-subtitle { font-size: 12px; color: var(--secondary); text-align: center; margin-bottom: 16px; transition: color 0.3s ease; }
+
+        .allocation-item { display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); transition: border-color 0.3s ease; }
+        .allocation-item:last-child { border-bottom: none; }
+        .allocation-item .al-emoji { font-size: 22px; width: 32px; text-align: center; }
+        .allocation-item .al-info { flex: 1; }
+        .allocation-item .al-name { font-size: 13px; font-weight: 600; color: var(--text); transition: color 0.3s ease; }
+        .allocation-item .al-progress-text { font-size: 10px; color: var(--secondary); transition: color 0.3s ease; }
+        .allocation-item .al-input-wrapper { position: relative; width: 120px; }
+        .allocation-item .al-input-wrapper input { width: 100%; padding: 8px 36px 8px 10px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 13px; font-weight: 600; font-family: var(--font); text-align: right; outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, color 0.3s ease; background: var(--input-bg); color: var(--text); }
+        .allocation-item .al-input-wrapper input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .allocation-item .al-input-wrapper .al-suffix { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 10px; font-weight: 700; color: var(--secondary); pointer-events: none; transition: color 0.3s ease; }
+        .allocation-summary { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-top: 2px solid var(--border); margin-top: 8px; font-size: 13px; font-weight: 600; transition: border-color 0.3s ease; }
+        .allocation-summary .as-remaining { color: var(--danger); }
+        .allocation-summary .as-remaining.zero { color: var(--success); }
+
+        .section-header { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; padding: 0 2px; }
+        .section-header .section-icon { font-size: 16px; line-height: 1; }
+        .section-header .section-title { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; transition: color 0.3s ease; }
+        .section-subtitle { font-size: 11px; color: var(--secondary); font-weight: 400; padding: 0 2px; margin-bottom: 8px; transition: color 0.3s ease; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .stat-card { background: var(--card); border-radius: var(--radius); padding: 12px 12px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, border-color 0.3s ease; animation: fadeInUp 0.5s ease; display: flex; flex-direction: column; gap: 3px; -webkit-tap-highlight-color: transparent; }
+        .stat-card:active { transform: scale(0.98); }
+        .stat-card .stat-icon { font-size: 18px; line-height: 1; }
+        .stat-card .stat-title { font-size: 11px; font-weight: 600; color: var(--secondary); text-transform: uppercase; letter-spacing: 0.4px; transition: color 0.3s ease; }
+        .stat-card .stat-value { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; line-height: 1.2; transition: color 0.3s ease; }
+        .stat-card .stat-desc { font-size: 10px; color: var(--secondary); font-weight: 400; line-height: 1.3; transition: color 0.3s ease; }
+
+        .goals-list { display: flex; flex-direction: column; gap: 10px; }
+        .goal-card-item { background: var(--card); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, border-color 0.3s ease; animation: fadeInUp 0.5s ease; position: relative; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .goal-card-item:active { transform: scale(0.98); }
+        .goal-card-item.removing { animation: fadeOut 0.3s ease forwards; }
+        .goal-card-item .gci-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .goal-card-item .gci-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; transition: color 0.3s ease; }
+        .goal-card-item .gci-menu-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--secondary); padding: 4px 8px; border-radius: 6px; transition: background 0.15s ease, color 0.15s ease; line-height: 1; -webkit-tap-highlight-color: transparent; }
+        .goal-card-item .gci-amounts { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; flex-wrap: wrap; gap: 4px; }
+        .goal-card-item .gci-current { font-size: 16px; font-weight: 800; color: var(--text); transition: color 0.3s ease; }
+        .goal-card-item .gci-target { font-size: 12px; color: var(--secondary); transition: color 0.3s ease; }
+        .goal-card-item .gci-target strong { color: var(--text); font-weight: 600; transition: color 0.3s ease; }
+        .progress-bar-wrapper { width: 100%; height: 8px; background: var(--chart-bg); border-radius: 8px; overflow: hidden; margin-bottom: 6px; transition: background 0.3s ease; }
+        .progress-bar-fill { height: 100%; background: var(--primary); border-radius: 8px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .progress-bar-fill.completed { background: var(--success); }
+        .goal-card-item .gci-remaining { font-size: 11px; color: var(--secondary); text-align: right; transition: color 0.3s ease; }
+        .goal-card-item .gci-estimate { font-size: 11px; color: var(--primary); font-weight: 500; margin-top: 4px; text-align: center; font-style: italic; }
+        .goal-card-item .gci-completed-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--badge-bg); color: var(--badge-text); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; margin-top: 6px; transition: background 0.3s ease, color 0.3s ease; }
+        .goal-card-item .gci-menu-dropdown { position: absolute; right: 12px; top: 44px; background: var(--dropdown-bg); border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); border: 1px solid var(--border); z-index: 10; overflow: hidden; animation: scaleIn 0.15s ease; min-width: 130px; transition: background 0.3s ease, border-color 0.3s ease; }
+        .goal-card-item .gci-menu-dropdown button { display: block; width: 100%; padding: 10px 14px; border: none; background: var(--dropdown-bg); font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; text-align: left; font-family: var(--font); transition: background 0.15s ease, color 0.3s ease; }
+
+        .goal-detail-panel { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-lg); border: 1px solid var(--border); overflow: hidden; animation: fadeInUp 0.3s ease; transition: background 0.3s ease, border-color 0.3s ease; }
+        .goal-detail-header { padding: 20px 16px 16px; text-align: center; border-bottom: 1px solid var(--border); transition: border-color 0.3s ease; }
+        .goal-detail-emoji { font-size: 40px; margin-bottom: 6px; }
+        .goal-detail-name { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; transition: color 0.3s ease; }
+        .goal-detail-progress-section { padding: 16px 20px; border-bottom: 1px solid var(--border); transition: border-color 0.3s ease; }
+        .goal-detail-progress-bar { width: 100%; height: 12px; background: var(--chart-bg); border-radius: 12px; overflow: hidden; margin-bottom: 8px; transition: background 0.3s ease; }
+        .goal-detail-progress-fill { height: 100%; background: var(--primary); border-radius: 12px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .goal-detail-progress-fill.completed { background: var(--success); }
+        .goal-detail-progress-text { font-size: 13px; font-weight: 600; color: var(--secondary); text-align: center; transition: color 0.3s ease; }
+        .goal-detail-stats { padding: 16px 20px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 12px; transition: border-color 0.3s ease; }
+        .goal-detail-stat { text-align: center; }
+        .goal-detail-stat .gds-value { font-size: 16px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; transition: color 0.3s ease; }
+        .goal-detail-stat .gds-label { font-size: 10px; color: var(--secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; transition: color 0.3s ease; }
+        .goal-detail-info { padding: 14px 20px; border-bottom: 1px solid var(--border); transition: border-color 0.3s ease; }
+        .goal-detail-info-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 12px; }
+        .goal-detail-info-row .gdir-label { color: var(--secondary); font-weight: 500; transition: color 0.3s ease; }
+        .goal-detail-info-row .gdir-value { color: var(--text); font-weight: 600; transition: color 0.3s ease; }
+        .goal-detail-note { padding: 12px 20px; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--secondary); font-style: italic; line-height: 1.5; transition: border-color 0.3s ease, color 0.3s ease; }
+        .goal-detail-actions { padding: 16px 20px; display: flex; gap: 8px; border-bottom: 1px solid var(--border); transition: border-color 0.3s ease; }
+        .goal-detail-actions .btn { flex: 1; max-width: none; font-size: 13px; padding: 10px 12px; }
+        .goal-detail-summary { padding: 14px 20px; border-bottom: 1px solid var(--border); transition: border-color 0.3s ease; }
+        .goal-detail-summary .gds-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); transition: color 0.3s ease; }
+        .goal-detail-summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .goal-detail-summary-item { text-align: center; padding: 8px 4px; }
+        .goal-detail-summary-item .gdsi-value { font-size: 14px; font-weight: 700; color: var(--text); transition: color 0.3s ease; }
+        .goal-detail-summary-item .gdsi-label { font-size: 9px; color: var(--secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; transition: color 0.3s ease; }
+        .goal-detail-history { padding: 14px 20px; }
+        .goal-detail-history .gdh-title { font-size: 13px; font-weight: 700; margin-bottom: 8px; color: var(--text); transition: color 0.3s ease; }
+        .goal-detail-history-list { display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow-y: auto; }
+        .goal-detail-history-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: var(--hover-bg); border-radius: 8px; font-size: 12px; animation: fadeInUp 0.25s ease; transition: background 0.3s ease; }
+        .goal-detail-history-item .gdhi-date { color: var(--secondary); font-weight: 500; transition: color 0.3s ease; }
+        .goal-detail-history-item .gdhi-amount { font-weight: 700; color: var(--text); transition: color 0.3s ease; }
+        .goal-detail-history-item .gdhi-source { font-size: 10px; color: var(--secondary); transition: color 0.3s ease; }
+        .goal-detail-back { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: var(--primary); cursor: pointer; padding: 4px 0; margin-bottom: 8px; border: none; background: none; font-family: var(--font); }
+        .goal-detail-completed-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--badge-bg); color: var(--badge-text); padding: 6px 12px; border-radius: 16px; font-size: 13px; font-weight: 600; margin-top: 8px; transition: background 0.3s ease, color 0.3s ease; }
+
+        .currency-input-wrapper { position: relative; width: 100%; margin-bottom: 4px; }
+        .currency-input-wrapper input { width: 100%; padding: 12px 50px 12px 14px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; font-weight: 500; font-family: var(--font); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, color 0.3s ease; text-align: left; letter-spacing: 0.3px; background: var(--input-bg); color: var(--text); }
+        .currency-input-wrapper input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .currency-input-wrapper .currency-suffix { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; font-weight: 700; color: var(--secondary); pointer-events: none; user-select: none; transition: color 0.3s ease; }
+
+        .input-error { border-color: var(--danger) !important; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+        .input-error:focus { border-color: var(--danger) !important; box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important; }
+        .money-words { font-size: 11px; color: var(--secondary); text-align: center; margin-top: 2px; margin-bottom: 8px; min-height: 0; font-style: italic; transition: color 0.3s ease; }
+        .money-words:empty { display: none; }
+        .validation-msg { font-size: 10px; color: var(--danger); text-align: center; margin-top: 2px; min-height: 0; transition: opacity 0.2s ease; }
+        .validation-msg:empty { display: none; }
+        .field-error { font-size: 10px; color: var(--danger); margin-top: 4px; min-height: 16px; transition: all 0.2s ease; }
+        .field-error:empty { display: none; }
+
+        .chart-tabs { display: flex; gap: 0; margin-bottom: 12px; background: var(--chart-bg); border-radius: 10px; padding: 3px; transition: background 0.3s ease; }
+        .chart-tab { flex: 1; padding: 7px 0; text-align: center; font-size: 12px; font-weight: 600; cursor: pointer; border-radius: 8px; transition: background 0.25s ease, color 0.25s ease; color: var(--secondary); border: none; background: transparent; font-family: var(--font); }
+        .chart-tab.active { background: var(--primary); color: white; box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25); }
+        .chart-card { background: var(--card); border-radius: 12px; padding: 16px 14px 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-top: 8px; width: 100%; max-width: 100%; overflow: hidden; box-sizing: border-box; transition: background 0.3s ease, border-color 0.3s ease; }
+        .chart-bars { display: flex; align-items: flex-end; justify-content: space-between; height: 140px; width: 100%; gap: 4px; position: relative; }
+        .chart-bar-wrapper { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; position: relative; cursor: pointer; min-width: 0; -webkit-tap-highlight-color: transparent; }
+        .chart-bar-wrapper:active { opacity: 0.7; }
+        .chart-bar-tooltip { position: absolute; top: -28px; left: 50%; transform: translateX(-50%); background: var(--tooltip-bg); color: var(--tooltip-text); font-size: 10px; font-weight: 600; padding: 4px 8px; border-radius: 6px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 5; text-align: center; line-height: 1.3; }
+        .chart-bar-wrapper.active .chart-bar-tooltip { opacity: 1; }
+        .chart-bar-fill { width: 100%; background: var(--primary); border-radius: 4px 4px 0 0; transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1); min-height: 3px; }
+        .chart-bar-label { font-size: 10px; color: var(--secondary); margin-top: 4px; font-weight: 500; text-align: center; white-space: nowrap; transition: color 0.3s ease; }
+
+        .insight-row { background: var(--card); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 8px; animation: fadeInUp 0.5s ease; display: flex; align-items: center; gap: 12px; transition: background 0.3s ease, border-color 0.3s ease; }
+        .insight-row .insight-icon { font-size: 22px; }
+        .insight-row .insight-content { flex: 1; }
+        .insight-row .insight-value { font-size: 15px; font-weight: 700; color: var(--text); transition: color 0.3s ease; }
+        .insight-row .insight-label { font-size: 11px; color: var(--secondary); margin-top: 2px; transition: color 0.3s ease; }
+        .insights-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+        .insight-card { background: var(--card); border-radius: 12px; padding: 10px 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); text-align: center; animation: fadeInUp 0.5s ease; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, border-color 0.3s ease; -webkit-tap-highlight-color: transparent; }
+        .insight-card:active { transform: scale(0.97); }
+        .insight-card .insight-icon { font-size: 16px; margin-bottom: 2px; line-height: 1; }
+        .insight-card .insight-value { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; line-height: 1.2; transition: color 0.3s ease; }
+        .insight-card .insight-label { font-size: 9px; color: var(--secondary); font-weight: 400; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 1px; line-height: 1.3; transition: color 0.3s ease; }
+
+        .motivational-text { text-align: center; font-size: 11px; color: var(--secondary); font-weight: 400; font-style: italic; padding: 2px 0; margin-top: -2px; transition: color 0.3s ease; }
+
+        .empty-state { text-align: center; padding: 32px 20px; animation: fadeInUp 0.5s ease; }
+        .empty-state .empty-icon { font-size: 40px; margin-bottom: 10px; }
+        .empty-state .empty-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; transition: color 0.3s ease; }
+        .empty-state .empty-desc { font-size: 12px; color: var(--secondary); line-height: 1.4; transition: color 0.3s ease; }
+
+        .journal-records { display: flex; flex-direction: column; gap: 8px; max-height: 500px; overflow-y: auto; scroll-behavior: smooth; }
+        .journal-record { background: var(--card); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); animation: fadeInUp 0.4s ease; transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.3s ease, border-color 0.3s ease; position: relative; -webkit-tap-highlight-color: transparent; }
+        .journal-record:active { transform: scale(0.98); }
+        .journal-record.removing { animation: fadeOut 0.3s ease forwards; }
+        .journal-record .jr-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .journal-record .jr-date { font-size: 14px; font-weight: 700; color: var(--text); transition: color 0.3s ease; }
+        .journal-record .jr-menu-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--secondary); padding: 4px 8px; border-radius: 6px; transition: background 0.15s ease, color 0.15s ease; line-height: 1; -webkit-tap-highlight-color: transparent; }
+        .journal-record .jr-row { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; }
+        .journal-record .jr-label { font-size: 11px; color: var(--secondary); font-weight: 500; transition: color 0.3s ease; }
+        .journal-record .jr-value { font-size: 12px; font-weight: 600; color: var(--text); transition: color 0.3s ease; }
+        .journal-record .jr-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 10px; margin-top: 4px; }
+        .jr-badge.success { background: var(--badge-bg); color: var(--badge-text); }
+        .jr-badge.recorded { background: #EFF6FF; color: var(--primary); }
+        .journal-record .jr-note { font-size: 11px; color: var(--secondary); font-style: italic; margin-top: 4px; padding: 6px 8px; background: var(--hover-bg); border-radius: 6px; transition: background 0.3s ease, color 0.3s ease; }
+        .journal-record .jr-allocation { margin-top: 6px; padding: 8px 10px; background: var(--hover-bg); border-radius: 8px; font-size: 11px; transition: background 0.3s ease; }
+        .journal-record .jr-allocation .jra-title { font-weight: 600; color: var(--secondary); margin-bottom: 4px; transition: color 0.3s ease; }
+        .journal-record .jr-allocation .jra-item { display: flex; justify-content: space-between; padding: 2px 0; color: var(--text); transition: color 0.3s ease; }
+        .dropdown-menu { position: absolute; right: 8px; top: 40px; background: var(--dropdown-bg); border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12); border: 1px solid var(--border); z-index: 10; overflow: hidden; animation: scaleIn 0.15s ease; min-width: 120px; transition: background 0.3s ease, border-color 0.3s ease; }
+        .dropdown-menu button { display: block; width: 100%; padding: 10px 14px; border: none; background: var(--dropdown-bg); font-size: 13px; font-weight: 500; color: var(--text); cursor: pointer; text-align: left; font-family: var(--font); transition: background 0.15s ease, color 0.3s ease; }
+        .dropdown-menu button.danger { color: var(--danger); }
+        .journal-summary { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+        .journal-summary-item { background: var(--card); border-radius: 12px; padding: 10px 8px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); text-align: center; transition: background 0.3s ease, border-color 0.3s ease; }
+        .journal-summary-item .js-label { font-size: 10px; color: var(--secondary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 2px; transition: color 0.3s ease; }
+        .journal-summary-item .js-value { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; transition: color 0.3s ease; }
+        .journal-controls { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
+
+        .month-selector { flex: 1; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 13px; font-weight: 500; font-family: var(--font); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, color 0.3s ease; min-width: 0; background: var(--input-bg); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: left; -webkit-tap-highlight-color: transparent; }
+        .month-selector:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .month-selector svg { flex-shrink: 0; transition: transform 0.2s ease; }
+        .search-input { flex: 1; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 13px; font-weight: 500; font-family: var(--font); outline: none; transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.3s ease, color 0.3s ease; min-width: 0; background: var(--input-bg); color: var(--text); }
+        .search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+        .search-input::placeholder { color: #9CA3AF; font-weight: 400; }
+
+        .month-picker-handle { width: 36px; height: 4px; background: #D1D5DB; border-radius: 2px; margin: 0 auto 16px; }
+        .month-picker-list { display: flex; flex-direction: column; gap: 4px; max-height: 50vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .month-picker-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-radius: 12px; cursor: pointer; font-size: 15px; font-weight: 500; color: var(--text); transition: all 0.15s ease; -webkit-tap-highlight-color: transparent; min-height: 44px; }
+        .month-picker-item:active { background: var(--hover-bg); transform: scale(0.98); }
+        .month-picker-item.selected { background: var(--primary); color: white; font-weight: 600; }
+        .month-picker-item.selected:active { background: var(--primary-hover); }
+        .month-picker-check { font-size: 18px; opacity: 0; transition: opacity 0.15s ease; }
+        .month-picker-item.selected .month-picker-check { opacity: 1; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--nav-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; justify-content: space-around; align-items: center; padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--border); border-radius: 20px 20px 0 0; z-index: 90; box-shadow: 0 -4px 20px var(--shadow-color); transition: background 0.3s ease, border-color 0.3s ease; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; background: none; border: none; cursor: pointer; padding: 6px 12px; border-radius: 12px; transition: all 0.2s ease; -webkit-tap-highlight-color: transparent; font-family: var(--font); }
+        .nav-item .nav-icon { font-size: 22px; transition: transform 0.2s ease; }
+        .nav-item .nav-label { font-size: 10px; font-weight: 600; color: var(--secondary); transition: color 0.2s ease; }
+        .nav-item.active .nav-label { color: var(--primary); }
+        .nav-item.active .nav-icon { transform: scale(1.15); }
+        .nav-fab { position: relative; top: -25px; right: -10px; }
+        .nav-fab .nav-icon { width: 52px; height: 52px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4); transition: all 0.25s ease; }
+        .nav-fab:active .nav-icon { transform: scale(0.9); }
+
+        .btn:focus-visible, .nav-item:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, .month-selector:focus-visible, .search-input:focus-visible, .chart-tab:focus-visible, .emoji-option:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+        .goal-card-item:focus-visible, .stat-card:focus-visible, .insight-card:focus-visible, .journal-record:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; border-radius: var(--radius); }
+
+        @media (hover: hover) {
+            .btn-primary:hover { background: var(--primary-hover); box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35); transform: translateY(-1px); }
+            .btn-success:hover { background: #15803D; box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35); transform: translateY(-1px); }
+            .btn-outline:hover { background: var(--hover-bg); border-color: #D1D5DB; }
+            .btn-danger:hover { background: var(--danger-hover); }
+            .stat-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+            .goal-card-item:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+            .insight-card:hover { box-shadow: var(--shadow); transform: translateY(-1px); }
+            .journal-record:hover { box-shadow: var(--shadow); }
+            .envelope-wrapper:hover { transform: translateY(-2px); }
+            .chart-tab:hover:not(.active) { color: var(--text); background: rgba(255, 255, 255, 0.6); }
+            .emoji-option:hover { border-color: var(--primary); background: #EFF6FF; }
+            .goal-card-item .gci-menu-btn:hover { background: var(--hover-bg); color: var(--text); }
+            .journal-record .jr-menu-btn:hover { background: var(--hover-bg); color: var(--text); }
+            .dropdown-menu button:hover { background: var(--hover-bg); }
+            .dropdown-menu button.danger:hover { background: #FEF2F2; }
+            .goal-card-item .gci-menu-dropdown button:hover { background: var(--hover-bg); }
+            .goal-card-item .gci-menu-dropdown button.danger:hover { background: #FEF2F2; }
+            .bottom-sheet .goal-option:hover { border-color: var(--primary); background: #F8FAFF; }
+            .nav-item:hover:not(.active):not(.nav-fab) .nav-label { color: var(--text); }
+            .nav-fab:hover .nav-icon { background: var(--primary-hover); transform: scale(1.05); box-shadow: 0 8px 24px rgba(37, 99, 235, 0.5); }
+            .month-selector:hover { border-color: #D1D5DB; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-8px); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03); } }
+        .pulse { animation: pulse 0.5s ease; }
+        @keyframes chartFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .chart-fade { animation: chartFadeIn 0.35s ease; }
+
+        @media (max-width: 380px) {
+            .card { padding: 18px 14px; min-height: 260px; }
+            .target-amount { font-size: 34px; }
+            .header h1 { font-size: 22px; }
+            .btn { padding: 10px 18px; font-size: 14px; }
+            .stat-card .stat-value { font-size: 16px; }
+            .stat-card { padding: 10px 10px; }
+            .insights-grid { grid-template-columns: 1fr; gap: 4px; }
+            .stats-grid { gap: 6px; }
+            .journal-summary { grid-template-columns: 1fr 1fr 1fr; gap: 4px; }
+            .journal-summary-item { padding: 8px 6px; }
+            .journal-controls { flex-direction: column; gap: 6px; }
+            .chart-bars { height: 110px; }
+            .chart-bar-label { font-size: 8px; }
+            .goal-detail-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .allocation-item .al-input-wrapper { width: 90px; }
+            .nav-fab .nav-icon { width: 44px; height: 44px; font-size: 22px; }
+            .envelope-wrapper { width: 120px; height: 95px; }
+        }
+        @media (min-width: 768px) {
+            .app-container { gap: 18px; padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
+            .card { padding: 28px 28px; min-height: 300px; }
+            .target-amount { font-size: 48px; }
+            .stat-card .stat-value { font-size: 22px; }
+            .chart-bars { height: 160px; }
+            .envelope-wrapper { width: 160px; height: 125px; }
+        }
+    </style>
+</head>
+  <body>
+    <div class="app-container" id="appContainer">
+        <div class="header"><div style="display:flex;justify-content:space-between;align-items:center;"><button class="theme-toggle" onclick="toggleTheme()" aria-label="Đổi giao diện">🌙</button><h1>Pocket Save</h1><div style="width:40px;"></div></div><div class="date-info"><span class="day-name" id="dayName"></span> — <span id="dateString"></span></div></div>
+        <div id="mainContentArea">
+            <div class="page" id="pageHome">
+                <div class="card" id="mainCard"><div id="initialState"><div class="card-title">Thử thách tiết kiệm hôm nay</div><div class="card-subtitle">Mở phong bì để khám phá mục tiêu tiết kiệm hôm nay.</div><div class="envelope-wrapper" onclick="openEnvelope()"><div class="envelope"><div class="envelope-flap" id="envelopeFlap"></div><div class="envelope-seal" id="envelopeSeal"></div><div class="envelope-letter" id="envelopeLetter"><span class="envelope-letter-text">Tiết kiệm</span></div><div class="envelope-body"></div></div></div><button class="btn btn-primary" onclick="openEnvelope()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13L2 4"/></svg>Mở thử thách hôm nay</button></div><div id="targetState" style="display:none;"><div class="target-display"><div class="target-label">Mục tiêu hôm nay</div><div class="target-amount" id="targetAmountDisplay"></div><div class="target-currency">VNĐ</div></div><button class="btn btn-success" style="margin-top:16px;" onclick="openCompleteModal()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Đánh dấu hoàn thành</button></div><div id="completedState" style="display:none;"><div class="completed-display"><div class="completed-row"><span class="completed-label">Mục tiêu hôm nay</span><span class="completed-value" id="completedTarget"></span></div><div class="completed-row"><span class="completed-label">Đã tiết kiệm</span><span class="completed-value" id="completedSaved"></span></div><div id="completedBadge"></div></div></div></div>
+                <div id="dashboardOverview"><div class="section-header"><span class="section-icon">📊</span><span class="section-title">Tổng quan</span></div><div class="section-subtitle">Thống kê hành trình tiết kiệm của bạn</div><div class="stats-grid"><div class="stat-card"><div class="stat-icon">💰</div><div class="stat-title">Tổng tiết kiệm</div><div class="stat-value" id="statTotalSaved">0 VNĐ</div><div class="stat-desc">Tổng số tiền đã tiết kiệm được</div></div><div class="stat-card"><div class="stat-icon">📅</div><div class="stat-title">Số ngày đã tiết kiệm</div><div class="stat-value" id="statTotalDays">0 ngày</div><div class="stat-desc">Tổng số ngày hoàn thành thử thách</div></div><div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-title">Mục tiêu hôm nay</div><div class="stat-value" id="statTodayTarget" style="font-size:15px;">Chưa thiết lập</div><div class="stat-desc">Mục tiêu tiết kiệm trong ngày</div></div><div class="stat-card"><div class="stat-icon">📈</div><div class="stat-title">Tỷ lệ hoàn thành</div><div class="stat-value" id="statCompletionRate">0%</div><div class="stat-desc">Số ngày hoàn thành / tổng số ngày</div></div></div></div>
+                <div class="motivational-text" id="motivationalText" style="margin-top:8px;"></div>
+                <div style="margin-top:8px;"><div class="section-header"><span class="section-icon">🕐</span><span class="section-title">Hoạt động gần đây</span></div><div id="recentActivity" style="background:var(--card);border-radius:12px;padding:12px 16px;box-shadow:var(--shadow-sm);border:1px solid var(--border);"></div></div>
+            </div>
+            <div class="page" id="pageGoals" style="display:none;"><div id="goalsPageContent"><div class="section-header"><span class="section-icon">🎯</span><span class="section-title">Mục tiêu tiết kiệm</span></div><div class="section-subtitle">Theo dõi tiến độ các mục tiêu dài hạn của bạn</div><div class="goals-list" id="goalsList"></div></div><div id="goalDetailContainer" style="display:none;"></div></div>
+            <div class="page" id="pageJournal" style="display:none;"><div class="section-header"><span class="section-icon">📖</span><span class="section-title">Nhật ký tiết kiệm</span></div><div class="section-subtitle">Theo dõi hành trình tiết kiệm của bạn theo từng ngày</div><div class="journal-summary" id="journalSummary"><div class="journal-summary-item"><div class="js-label">Đã lưu</div><div class="js-value" id="jsDaysCount">0 ngày</div></div><div class="journal-summary-item"><div class="js-label">Tổng tiết kiệm</div><div class="js-value" id="jsTotalSaved">0 VNĐ</div></div><div class="journal-summary-item"><div class="js-label">Trung bình</div><div class="js-value" id="jsAverage">0 VNĐ/ngày</div></div></div><div class="journal-controls"><button class="month-selector" id="monthSelectorBtn" onclick="openMonthPicker()"><span id="monthSelectorLabel">Tất cả tháng</span><svg width="12" height="8" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke="#6B7280" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><input type="hidden" id="monthSelectorValue" value=""><input type="text" class="search-input" id="searchInput" placeholder="Tìm theo ngày..." oninput="renderJournalRecords()"></div><div class="journal-records" id="journalRecords"></div></div>
+            <div class="page" id="pageAnalytics" style="display:none;"><div class="section-header"><span class="section-icon">📊</span><span class="section-title">Phân tích</span></div><div class="section-subtitle">Thông tin chi tiết về thói quen tiết kiệm của bạn</div><div id="analyticsContent"></div><div style="margin-top:12px;"><div class="section-header"><span class="section-icon">💡</span><span class="section-title">Thống kê nhanh</span></div><div class="insights-grid"><div class="insight-card"><div class="insight-icon">🏆</div><div class="insight-value" id="insightHighest">—</div><div class="insight-label">Khoản tiết kiệm lớn nhất</div></div><div class="insight-card"><div class="insight-icon">📊</div><div class="insight-value" id="insightAverage">—</div><div class="insight-label">Trung bình mỗi ngày</div></div><div class="insight-card"><div class="insight-icon">📆</div><div class="insight-value" id="insightFirstDay">—</div><div class="insight-label">Ngày bắt đầu</div></div></div></div></div>
+        </div>
+    </div>
+    <nav class="bottom-nav" id="bottomNav"><button class="nav-item active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button><button class="nav-item" data-page="goals" onclick="switchPage('goals')"><span class="nav-icon">🎯</span><span class="nav-label">Goals</span></button><button class="nav-item nav-fab" onclick="openAddGoalSheet()"><span class="nav-icon">＋</span></button><button class="nav-item" data-page="journal" onclick="switchPage('journal')"><span class="nav-icon">📖</span><span class="nav-label">Journal</span></button><button class="nav-item" data-page="analytics" onclick="switchPage('analytics')"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></button></nav>
+    <div class="modal-overlay" id="modalOverlay" style="display:none;"><div class="modal"><h2>Hôm nay bạn đã tiết kiệm bao nhiêu?</h2><div class="currency-input-wrapper"><input type="text" id="savedAmountInput" placeholder="Nhập số tiền..." inputmode="numeric" autocomplete="off" spellcheck="false" oninput="handleMoneyInput(this)"><span class="currency-suffix">VNĐ</span></div><div class="money-words" id="savedAmountWords"></div><div class="validation-msg" id="savedAmountValidation"></div><textarea id="savedNoteInput" placeholder="Ghi chú (không bắt buộc)..." style="margin-top:8px;"></textarea><div class="modal-buttons"><button class="btn btn-outline" onclick="closeModal()">Huỷ</button><button class="btn btn-primary" onclick="confirmSave()">Tiếp tục</button></div></div></div>
+    <div class="bottom-sheet-overlay" id="allocationSheetOverlay" style="display:none;"><div class="bottom-sheet" id="allocationSheet"><h3>Phân bổ khoản tiết kiệm</h3><p class="bs-subtitle">Hãy chọn mục tiêu bạn muốn cộng khoản tiết kiệm hôm nay.</p><div id="allocationList"></div><div class="allocation-summary"><span>Đã phân bổ: <strong id="allocTotal">0 VNĐ</strong></span><span>Còn lại: <strong id="allocRemaining" class="as-remaining">0 VNĐ</strong></span></div><div class="modal-buttons" style="margin-top:12px;"><button class="btn btn-outline" onclick="closeAllocationSheet()">Huỷ</button><button class="btn btn-primary" id="allocConfirmBtn" onclick="confirmAllocation()" disabled>Xác nhận phân bổ</button></div></div></div>
+    <div class="bottom-sheet-overlay" id="addGoalSheetOverlay" style="display:none;"><div class="bottom-sheet"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;"><h3 style="margin:0;">Tạo mục tiêu mới</h3><button onclick="closeAddGoalSheet()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--secondary);padding:4px;">✕</button></div><div style="margin-bottom:12px;"><label style="font-size:12px;font-weight:600;color:var(--secondary);display:block;margin-bottom:4px;">Tên mục tiêu <span style="color:var(--danger);">*</span></label><input type="text" id="sheetGoalNameInput" placeholder="vd: Laptop mới" maxlength="50" oninput="validateGoalField('name')" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;font-family:var(--font);outline:none;transition:border-color 0.2s ease,box-shadow 0.2s ease;background:var(--input-bg);color:var(--text);"><div class="field-error" id="nameError"></div></div><div style="margin-bottom:12px;"><label style="font-size:12px;font-weight:600;color:var(--secondary);display:block;margin-bottom:4px;">Số tiền mục tiêu <span style="color:var(--danger);">*</span></label><div class="currency-input-wrapper"><input type="text" id="sheetGoalTargetInput" placeholder="vd: 10.000.000" inputmode="numeric" autocomplete="off" spellcheck="false" oninput="handleMoneyInput(this);validateGoalField('target');"><span class="currency-suffix">VNĐ</span></div><div class="money-words" id="sheetGoalTargetWords"></div><div class="field-error" id="targetError"></div></div><div style="margin-bottom:12px;"><label style="font-size:12px;font-weight:600;color:var(--secondary);display:block;margin-bottom:4px;">Biểu tượng</label><div class="emoji-picker" id="sheetEmojiPicker"></div><input type="hidden" id="sheetGoalEmojiInput" value="🎯"></div><div style="margin-bottom:12px;"><label style="font-size:12px;font-weight:600;color:var(--secondary);display:block;margin-bottom:4px;">Ghi chú</label><textarea id="sheetGoalNoteInput" placeholder="Ghi chú (không bắt buộc)" maxlength="200" style="width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-family:var(--font);outline:none;resize:vertical;min-height:60px;transition:border-color 0.2s ease;background:var(--input-bg);color:var(--text);"></textarea></div><div style="display:flex;gap:10px;margin-top:16px;"><button class="btn btn-outline" onclick="closeAddGoalSheet()" style="flex:1;">Huỷ</button><button class="btn btn-primary" onclick="createGoalFromSheet()" style="flex:1;">Tạo mục tiêu</button></div></div></div>
+    <div class="bottom-sheet-overlay" id="monthPickerOverlay" style="display:none;"><div class="bottom-sheet" id="monthPickerSheet"><div class="month-picker-handle"></div><h3 style="text-align:center;margin-bottom:12px;">Chọn tháng</h3><div class="month-picker-list" id="monthPickerList"></div></div></div>
+    <div id="successToast" style="position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--success);color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:200;opacity:0;transition:opacity 0.3s ease,transform 0.3s ease;pointer-events:none;box-shadow:0 4px 12px rgba(22,163,74,0.3);"></div>
+    <div class="modal-overlay" id="addGoalModalOverlay" style="display:none;"><div class="modal"><h2 id="addGoalModalTitle">Tạo mục tiêu mới</h2><input type="text" id="goalNameInput" placeholder="Tên mục tiêu (vd: Laptop mới)"><div style="margin-bottom:8px;text-align:left;font-size:12px;color:var(--secondary);">Biểu tượng</div><div class="emoji-picker" id="emojiPicker"></div><input type="hidden" id="goalEmojiInput" value="🎯"><div class="currency-input-wrapper"><input type="text" id="goalTargetInput" placeholder="Số tiền mục tiêu (vd: 10.000.000)" inputmode="numeric" autocomplete="off" spellcheck="false" oninput="handleMoneyInput(this)"><span class="currency-suffix">VNĐ</span></div><div class="money-words" id="goalTargetWords"></div><div class="validation-msg" id="goalTargetValidation"></div><textarea id="goalNoteInput" placeholder="Ghi chú (không bắt buộc)"></textarea><input type="hidden" id="editGoalId"><div class="modal-buttons"><button class="btn btn-outline" onclick="closeAddGoalModal()">Huỷ</button><button class="btn btn-primary" id="saveGoalBtn" onclick="saveGoal()">Tạo mục tiêu</button></div></div></div>
+    <div class="modal-overlay" id="deleteGoalModalOverlay" style="display:none;"><div class="modal"><h2>Xác nhận xóa</h2><p>Nếu xóa mục tiêu này, mọi dữ liệu liên quan sẽ bị xóa.</p><input type="hidden" id="deleteGoalId"><div class="modal-buttons"><button class="btn btn-outline" onclick="closeDeleteGoalModal()">Huỷ</button><button class="btn btn-danger" onclick="confirmDeleteGoal()">Xóa</button></div></div></div>
+    <div class="modal-overlay" id="editModalOverlay" style="display:none;"><div class="modal"><h2>Chỉnh sửa khoản tiết kiệm</h2><p id="editModalDate" style="font-size:13px;color:var(--secondary);margin-bottom:12px;"></p><div class="currency-input-wrapper"><input type="text" id="editAmountInput" placeholder="Nhập số tiền mới..." inputmode="numeric" autocomplete="off" spellcheck="false" oninput="handleMoneyInput(this)"><span class="currency-suffix">VNĐ</span></div><div class="money-words" id="editAmountWords"></div><div class="validation-msg" id="editAmountValidation"></div><textarea id="editNoteInput" placeholder="Ghi chú..." style="margin-top:8px;"></textarea><div class="modal-buttons"><button class="btn btn-outline" onclick="closeEditModal()">Huỷ</button><button class="btn btn-primary" onclick="confirmEdit()">Lưu thay đổi</button></div></div></div>
+    <div class="modal-overlay" id="deleteModalOverlay" style="display:none;"><div class="modal"><h2>Xác nhận xóa</h2><p>Nếu xóa, dữ liệu sẽ không thể khôi phục.</p><div class="modal-buttons"><button class="btn btn-outline" onclick="closeDeleteModal()">Huỷ</button><button class="btn btn-danger" onclick="confirmDelete()">Xóa</button></div></div></div>
+   
+    <script> 
+        function formatCurrency(amount) { return amount.toLocaleString('vi-VN'); }
+        function formatCurrencyDisplay(amount) { return formatCurrency(amount) + ' VNĐ'; }
+        function parseCurrencyInput(raw) { if (!raw) return 0; const cleaned = raw.replace(/[^\d]/g, ''); const num = parseInt(cleaned, 10); return isNaN(num) ? 0 : num; }
+        const MAX_AMOUNT = 999999999;
+        function handleMoneyInput(inputEl) { const raw = inputEl.value; const cleaned = raw.replace(/[^\d]/g, ''); let num = parseInt(cleaned, 10); if (isNaN(num)) num = 0; if (num > MAX_AMOUNT) num = MAX_AMOUNT; const formatted = num > 0 ? formatCurrency(num) : ''; inputEl.value = formatted; const wordsEl = document.getElementById(inputEl.id + 'Words'); const validationEl = document.getElementById(inputEl.id + 'Validation'); if (wordsEl) { wordsEl.textContent = num > 0 ? '≈ ' + numberToVietnameseWords(num) : ''; } if (validationEl) { const originalCleaned = raw.replace(/[^\d]/g, ''); const originalNum = parseInt(originalCleaned, 10); if (!isNaN(originalNum) && originalNum > MAX_AMOUNT) { validationEl.textContent = 'Số tiền tối đa: ' + formatCurrencyDisplay(MAX_AMOUNT); } else { validationEl.textContent = ''; } } }
+        function getMoneyInputValue(inputEl) { return parseCurrencyInput(inputEl.value); }
+        function setMoneyInputValue(inputEl, amount) { if (amount && amount > 0) { inputEl.value = formatCurrency(amount); } else { inputEl.value = ''; } handleMoneyInput(inputEl); }
+        function numberToVietnameseWords(n) { if (n === 0) return 'không đồng'; if (n < 0) return 'âm ' + numberToVietnameseWords(Math.abs(n)); const units = ['', 'nghìn', 'triệu', 'tỷ']; const digits = ['không', 'một', 'hai', 'ba', 'bốn', 'năm', 'sáu', 'bảy', 'tám', 'chín']; const result = []; let unitIndex = 0; let temp = n; while (temp > 0) { const group = temp % 1000; if (group > 0) { let groupStr = ''; const hundreds = Math.floor(group / 100); const remainder = group % 100; const tens = Math.floor(remainder / 10); const ones = remainder % 10; if (hundreds > 0) groupStr += digits[hundreds] + ' trăm '; if (tens > 0) { if (tens === 1) groupStr += 'mười '; else groupStr += digits[tens] + ' mươi '; if (ones === 1) groupStr += 'mốt'; else if (ones === 5) groupStr += 'lăm'; else if (ones > 0) groupStr += digits[ones]; } else if (ones > 0) { if (hundreds > 0 && ones === 1) groupStr += 'lẻ một'; else if (hundreds > 0 && ones === 5) groupStr += 'lẻ năm'; else if (hundreds > 0) groupStr += 'lẻ ' + digits[ones]; else if (ones === 5 && unitIndex > 0) groupStr += 'năm'; else groupStr += digits[ones]; } if (unitIndex > 0 && groupStr.trim()) groupStr += ' ' + units[unitIndex]; result.unshift(groupStr.trim()); } temp = Math.floor(temp / 1000); unitIndex++; } let finalResult = result.join(' ').replace(/\s+/g, ' ').trim(); if (finalResult.endsWith('mươi một')) finalResult = finalResult.replace(/mươi một$/, 'mươi mốt'); return finalResult + ' đồng'; }
+        const motivationalTexts = ['Tiết kiệm hôm nay, an tâm ngày mai.', 'Mỗi khoản nhỏ hôm nay đều có ý nghĩa.', 'Bạn đang tiến gần hơn tới mục tiêu của mình.', 'Kiên trì mỗi ngày sẽ tạo nên khác biệt.'];
+        function getRandomMotivationalText() { return motivationalTexts[Math.floor(Math.random() * motivationalTexts.length)]; }
+        function getTodayKey() { const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
+        function getDayName(d) { return ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][d.getDay()]; }
+        function getDateString(d) { return `ngày ${d.getDate()} tháng ${d.getMonth()+1}, ${d.getFullYear()}`; }
+        function formatDateKey(k) { const p = k.split('-'); if (p.length !== 3) return k; return `${p[2]}/${p[1]}/${p[0]}`; }
+        function generateRandomTarget() { return (Math.floor(Math.random() * 20) + 1) * 10000; }
+        function getGoals() { try { return JSON.parse(localStorage.getItem('pocket_save_goals') || '[]'); } catch (e) { return []; } }
+        function saveGoals(g) { localStorage.setItem('pocket_save_goals', JSON.stringify(g)); }
+        function getGoalById(id) { return getGoals().find(g => g.id === id); }
+        function addAmountToGoal(goalId, amount) { const goals = getGoals(); const g = goals.find(x => x.id === goalId); if (g) { g.currentSaved = (g.currentSaved || 0) + amount; g.updatedDate = getTodayKey(); } saveGoals(goals); }
+        function removeAmountFromGoal(goalId, amount) { const goals = getGoals(); const g = goals.find(x => x.id === goalId); if (g) { g.currentSaved = Math.max((g.currentSaved || 0) - amount, 0); g.updatedDate = getTodayKey(); } saveGoals(goals); }
+        function saveChallengeData(data) { localStorage.setItem(`pocket_save_${getTodayKey()}`, JSON.stringify(data)); }
+        function saveChallengeDataForDate(dk, data) { localStorage.setItem(`pocket_save_${dk}`, JSON.stringify(data)); }
+        function deleteChallengeDataForDate(dk) { localStorage.removeItem(`pocket_save_${dk}`); }
+        function loadChallengeData() { const r = localStorage.getItem(`pocket_save_${getTodayKey()}`); if (!r) return null; try { return JSON.parse(r); } catch (e) { return null; } }
+        function loadAllChallengeData() { const a = []; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('pocket_save_') && k !== 'pocket_save_goals') { const r = localStorage.getItem(k); if (r) { try { const d = JSON.parse(r); d._dateKey = k.replace('pocket_save_', ''); a.push(d); } catch (e) {} } } } a.sort((x, y) => x._dateKey.localeCompare(y._dateKey)); return a; }
+
+        function getTheme() { return localStorage.getItem('pocket_save_theme') || 'light'; }
+        function setTheme(theme) { localStorage.setItem('pocket_save_theme', theme); applyTheme(theme); }
+        function applyTheme(theme) { document.documentElement.setAttribute('data-theme', theme); const toggleBtn = document.querySelector('.theme-toggle'); if (toggleBtn) toggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙'; }
+        function toggleTheme() { const current = getTheme(); const next = current === 'dark' ? 'light' : 'dark'; setTheme(next); }
+
+        function switchPage(pageName) { document.querySelectorAll('.page').forEach(p => p.style.display = 'none'); const targetPage = document.getElementById('page' + pageName.charAt(0).toUpperCase() + pageName.slice(1)); if (targetPage) targetPage.style.display = 'block'; document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); const navItem = document.querySelector(`.nav-item[data-page="${pageName}"]`); if (navItem) navItem.classList.add('active'); if (pageName === 'goals') renderGoals(); if (pageName === 'journal') { populateMonthPicker(); renderJournalRecords(); } if (pageName === 'analytics') renderAnalytics(); if (pageName === 'home') { updateDashboard(); renderRecentActivity(); } if (goalDetailContainer.style.display === 'block') closeGoalDetail(); }
+        function renderRecentActivity() { const allData = loadAllChallengeData(); const recent = allData.filter(d => d.completed && d.savedAmount).slice(-3).reverse(); const container = document.getElementById('recentActivity'); if (!container) return; if (!recent.length) { container.innerHTML = '<div style="text-align:center;padding:16px;color:var(--secondary);font-size:12px;">Chưa có hoạt động gần đây</div>'; return; } container.innerHTML = recent.map(r => `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);"><span style="font-size:13px;color:var(--secondary);">📅 ${formatDateKey(r._dateKey)}</span><span style="font-size:14px;font-weight:700;color:var(--success);">+${formatCurrencyDisplay(r.savedAmount)}</span></div>`).join(''); }
+
+        function openMonthPicker() { const all = loadAllChallengeData(); const months = new Set(); all.forEach(d => { if (d._dateKey) { const p = d._dateKey.split('-'); if (p.length >= 2) months.add(`${p[1]}/${p[0]}`); } }); const sorted = Array.from(months).sort((a, b) => { const [ma, ya] = a.split('/'); const [mb, yb] = b.split('/'); return (parseInt(yb) - parseInt(ya)) || (parseInt(mb) - parseInt(ma)); }); const mNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']; const currentVal = document.getElementById('monthSelectorValue').value; let html = `<div class="month-picker-item${!currentVal?' selected':''}" onclick="selectMonth('')"><span>Tất cả tháng</span><span class="month-picker-check">✓</span></div>`; sorted.forEach(mk => { const [m, y] = mk.split('/'); html += `<div class="month-picker-item${currentVal===mk?' selected':''}" onclick="selectMonth('${mk}')"><span>${mNames[parseInt(m)-1]}/${y}</span><span class="month-picker-check">✓</span></div>`; }); document.getElementById('monthPickerList').innerHTML = html; document.getElementById('monthPickerOverlay').style.display = 'flex'; setTimeout(() => { const sel = document.querySelector('.month-picker-item.selected'); if (sel) sel.scrollIntoView({ block: 'center' }); }, 100); }
+        function selectMonth(value) { document.getElementById('monthSelectorValue').value = value; const mNames = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12']; if (!value) { document.getElementById('monthSelectorLabel').textContent = 'Tất cả tháng'; } else { const [m, y] = value.split('/'); document.getElementById('monthSelectorLabel').textContent = `${mNames[parseInt(m)-1]}/${y}`; } closeMonthPicker(); renderJournalRecords(); }
+        function closeMonthPicker() { document.getElementById('monthPickerOverlay').style.display = 'none'; }
+        function populateMonthPicker() {}
+        document.getElementById('monthPickerOverlay').addEventListener('click', function(e) { if (e.target === this) closeMonthPicker(); });
+
+        const SHEET_EMOJIS = ['🎯', '💻', '🏍️', '📱', '🏠', '✈️', '🎓', '🚗', '💍', '🎮', '📚', '🏋️', '🎵', '🐱', '🌟'];
+        function initSheetEmojiPicker() { const picker = document.getElementById('sheetEmojiPicker'); const current = document.getElementById('sheetGoalEmojiInput').value; picker.innerHTML = SHEET_EMOJIS.map(e => `<button class="emoji-option${current===e?' selected':''}" onclick="selectSheetEmoji('${e}')">${e}</button>`).join(''); }
+        function selectSheetEmoji(emoji) { document.getElementById('sheetGoalEmojiInput').value = emoji; document.querySelectorAll('#sheetEmojiPicker .emoji-option').forEach(b => b.classList.remove('selected')); event.target.classList.add('selected'); }
+        function validateGoalField(field) { const nameInput = document.getElementById('sheetGoalNameInput'); const targetInput = document.getElementById('sheetGoalTargetInput'); document.getElementById('nameError').textContent = ''; document.getElementById('targetError').textContent = ''; nameInput.classList.remove('input-error'); targetInput.classList.remove('input-error'); if (field === 'name' || !field) { if (!nameInput.value.trim()) { nameInput.classList.add('input-error'); document.getElementById('nameError').textContent = '⚠️ Vui lòng nhập tên mục tiêu.'; } } if (field === 'target' || !field) { if (!getMoneyInputValue(targetInput) || getMoneyInputValue(targetInput) < 1000) { targetInput.classList.add('input-error'); document.getElementById('targetError').textContent = '⚠️ Vui lòng nhập số tiền hợp lệ.'; } } }
+        function openAddGoalSheet() { document.getElementById('sheetGoalNameInput').value = ''; document.getElementById('sheetGoalTargetInput').value = ''; setMoneyInputValue(document.getElementById('sheetGoalTargetInput'), 0); document.getElementById('sheetGoalNoteInput').value = ''; document.getElementById('sheetGoalEmojiInput').value = '🎯'; document.getElementById('nameError').textContent = ''; document.getElementById('targetError').textContent = ''; document.getElementById('sheetGoalNameInput').classList.remove('input-error'); document.getElementById('sheetGoalTargetInput').classList.remove('input-error'); initSheetEmojiPicker(); document.getElementById('addGoalSheetOverlay').style.display = 'flex'; setTimeout(() => document.getElementById('sheetGoalNameInput').focus(), 300); }
+        function closeAddGoalSheet() { document.getElementById('addGoalSheetOverlay').style.display = 'none'; }
+        function createGoalFromSheet() { const name = document.getElementById('sheetGoalNameInput').value.trim(); const target = getMoneyInputValue(document.getElementById('sheetGoalTargetInput')); const note = document.getElementById('sheetGoalNoteInput').value.trim(); const emoji = document.getElementById('sheetGoalEmojiInput').value; let hasError = false; if (!name) { document.getElementById('sheetGoalNameInput').classList.add('input-error'); document.getElementById('nameError').textContent = '⚠️ Vui lòng nhập tên mục tiêu.'; hasError = true; } if (!target || target < 1000) { document.getElementById('sheetGoalTargetInput').classList.add('input-error'); document.getElementById('targetError').textContent = '⚠️ Vui lòng nhập số tiền hợp lệ.'; hasError = true; } if (hasError) return; const goals = getGoals(); goals.push({ id: Date.now().toString(), name, target, currentSaved: 0, emoji, note, createdDate: getTodayKey() }); saveGoals(goals); closeAddGoalSheet(); renderGoals(); setTimeout(() => { const el = document.querySelector('.goal-card-item:last-child'); if (el) { el.style.transform = 'scale(0.95)'; el.style.opacity = '0'; el.style.transition = 'all 0.25s ease'; requestAnimationFrame(() => { el.style.transform = 'scale(1)'; el.style.opacity = '1'; }); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } }, 100); showToast('✅ Đã tạo mục tiêu mới.'); }
+        function showToast(msg) { const t = document.getElementById('successToast'); t.textContent = msg; t.style.opacity = '1'; t.style.transform = 'translateX(-50%) translateY(0)'; setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(-50%) translateY(10px)'; }, 2000); }
+        document.getElementById('addGoalSheetOverlay').addEventListener('click', function(e) { if (e.target === this) closeAddGoalSheet(); });
+
+        let currentTarget = null, isEnvelopeOpen = false, isCompleted = false, pendingSavingAmount = null, pendingSavingNote = null, editingDateKey = null, deletingDateKey = null, activeDropdown = null, chartPeriod = '7days';
+        const $ = id => document.getElementById(id);
+        const initialEl = $('initialState'), targetEl = $('targetState'), completedEl = $('completedState');
+        const targetAmountDisplay = $('targetAmountDisplay'), completedTarget = $('completedTarget'), completedSaved = $('completedSaved'), completedBadge = $('completedBadge');
+        const envelopeFlap = $('envelopeFlap'), envelopeSeal = $('envelopeSeal'), envelopeLetter = $('envelopeLetter'), mainCard = $('mainCard');
+        const modalOverlay = $('modalOverlay'), savedAmountInput = $('savedAmountInput'), savedNoteInput = $('savedNoteInput');
+        const allocationSheetOverlay = $('allocationSheetOverlay'), allocationList = $('allocationList'), allocTotal = $('allocTotal'), allocRemaining = $('allocRemaining'), allocConfirmBtn = $('allocConfirmBtn');
+        const deleteGoalModalOverlay = $('deleteGoalModalOverlay'), deleteGoalIdInput = $('deleteGoalId');
+        const editModalOverlay = $('editModalOverlay'), editAmountInput = $('editAmountInput'), editNoteInput = $('editNoteInput'), editModalDate = $('editModalDate');
+        const deleteModalOverlay = $('deleteModalOverlay');
+        const goalsList = $('goalsList'), analyticsContent = $('analyticsContent');
+        const journalRecords = $('journalRecords'), searchInput = $('searchInput');
+        const jsDaysCount = $('jsDaysCount'), jsTotalSaved = $('jsTotalSaved'), jsAverage = $('jsAverage');
+        const statTotalSaved = $('statTotalSaved'), statTotalDays = $('statTotalDays'), statTodayTarget = $('statTodayTarget'), statCompletionRate = $('statCompletionRate');
+        const insightHighest = $('insightHighest'), insightAverage = $('insightAverage'), insightFirstDay = $('insightFirstDay');
+        const motivationalText = $('motivationalText');
+        const goalDetailContainer = $('goalDetailContainer');
+
+        const EMOJI_OPTIONS = ['🎯', '💻', '🏍', '📱', '✈️', '🏠', '🎓', '🚗', '💍', '🎮', '📚', '🏋️', '🎵', '🐱', '🌟'];
+        function initEmojiPicker() { const picker = $('emojiPicker'); picker.innerHTML = EMOJI_OPTIONS.map(e => `<button class="emoji-option${goalEmojiInput.value===e?' selected':''}" onclick="selectEmoji('${e}')">${e}</button>`).join(''); }
+        function selectEmoji(emoji) { goalEmojiInput.value = emoji; document.querySelectorAll('.emoji-option').forEach(b => b.classList.remove('selected')); document.querySelector(`.emoji-option:nth-child(${EMOJI_OPTIONS.indexOf(emoji)+1})`).classList.add('selected'); }
+
+        function updateDashboard() { const all = loadAllChallengeData(); const totalSaved = all.filter(d => d.completed && d.savedAmount).reduce((s, d) => s + d.savedAmount, 0); const completedDays = all.filter(d => d.completed).length; const rate = all.length ? Math.round((completedDays / all.length) * 100) : 0; const highest = all.filter(d => d.completed && d.savedAmount).reduce((mx, d) => Math.max(mx, d.savedAmount || 0), 0); const avg = completedDays ? Math.round(totalSaved / completedDays) : 0; const firstDay = all.length ? all[0]._dateKey : null; statTotalSaved.textContent = formatCurrencyDisplay(totalSaved); statTotalDays.textContent = completedDays + ' ngày'; const td = all.find(d => d._dateKey === getTodayKey()); if (td && td.target) { statTodayTarget.textContent = formatCurrencyDisplay(td.target); statTodayTarget.style.fontSize = '15px'; } else { statTodayTarget.textContent = 'Chưa thiết lập'; statTodayTarget.style.fontSize = '13px'; } statCompletionRate.textContent = rate + '%'; insightHighest.textContent = highest ? formatCurrencyDisplay(highest) : '—'; insightAverage.textContent = avg ? formatCurrencyDisplay(avg) : '—'; insightFirstDay.textContent = firstDay ? formatDateKey(firstDay) : '—'; }
+
+        function renderGoals() { const goals = getGoals(); if (!goals.length) { goalsList.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-title">Bạn chưa có mục tiêu tiết kiệm</div><div class="empty-desc">Tạo mục tiêu đầu tiên để bắt đầu hành trình.</div><button class="btn btn-primary btn-sm" style="margin-top:12px;max-width:none;width:auto;" onclick="openAddGoalSheet()">+ Tạo mục tiêu đầu tiên</button></div>'; return; } const allData = loadAllChallengeData(); const completedData = allData.filter(d => d.completed && d.savedAmount); const avgDaily = completedData.length ? Math.round(completedData.reduce((s, d) => s + d.savedAmount, 0) / completedData.length) : 0; goalsList.innerHTML = goals.map(g => { const pct = g.target ? Math.min(Math.round((g.currentSaved || 0) / g.target * 100), 100) : 0; const remaining = Math.max((g.target || 0) - (g.currentSaved || 0), 0); const isGoalCompleted = remaining <= 0; let estimate = ''; if (!isGoalCompleted && avgDaily > 0 && remaining > 0) { const daysLeft = Math.ceil(remaining / avgDaily); const estDate = new Date(); estDate.setDate(estDate.getDate() + daysLeft); estimate = `Dự kiến hoàn thành vào Tháng ${estDate.getMonth()+1}/${estDate.getFullYear()}`; } return `<div class="goal-card-item" id="goal-${g.id}" onclick="openGoalDetail('${g.id}')"><div class="gci-header"><span class="gci-name">${g.emoji||'🎯'} ${g.name}</span><button class="gci-menu-btn" onclick="event.stopPropagation();toggleGoalMenu(event,'${g.id}')">⋮</button></div><div class="gci-amounts"><span class="gci-current">${formatCurrencyDisplay(g.currentSaved||0)}</span><span class="gci-target">/ <strong>${formatCurrencyDisplay(g.target||0)}</strong></span></div><div class="progress-bar-wrapper"><div class="progress-bar-fill${isGoalCompleted?' completed':''}" style="width:${pct}%;"></div></div><div class="gci-remaining">Còn lại: ${isGoalCompleted?'0 VNĐ':formatCurrencyDisplay(remaining)}</div>${isGoalCompleted?'<span class="gci-completed-badge">✅ Đã hoàn thành</span>':''}${estimate?`<div class="gci-estimate">📅 ${estimate}</div>`:''}<div class="gci-menu-dropdown" id="goalMenu-${g.id}" style="display:none;" onclick="event.stopPropagation();"><button onclick="openEditGoalModal('${g.id}')">✏️ Chỉnh sửa</button><button class="danger" onclick="openDeleteGoalModal('${g.id}')">🗑️ Xóa</button></div></div>`; }).join(''); }
+        function toggleGoalMenu(e, id) { e.stopPropagation(); const menu = document.getElementById(`goalMenu-${id}`); const wasOpen = menu.style.display === 'block'; document.querySelectorAll('.gci-menu-dropdown').forEach(m => m.style.display = 'none'); if (!wasOpen) menu.style.display = 'block'; }
+
+        function getContributionAmount(record, goalId) {
+            if (record.allocation && record.allocation.length > 0) {
+                const alloc = record.allocation.find(a => a.goalId === goalId);
+                if (alloc) return alloc.amount;
+            }
+            if (record.goalId === goalId) return record.savedAmount;
+            return 0;
+        }
+
+        function openGoalDetail(goalId) {
+            document.querySelectorAll('.gci-menu-dropdown').forEach(m => m.style.display = 'none');
+            const goal = getGoalById(goalId);
+            if (!goal) return;
+            const allData = loadAllChallengeData();
+            const contributions = allData.filter(d => {
+                if (!d.completed || !d.savedAmount) return false;
+                if (d.goalId === goalId) return true;
+                if (d.allocation && d.allocation.some(a => a.goalId === goalId)) return true;
+                return false;
+            });
+            contributions.sort((a, b) => b._dateKey.localeCompare(a._dateKey));
+            const totalContributed = contributions.reduce((s, d) => s + getContributionAmount(d, goalId), 0);
+            const pct = goal.target ? Math.min(Math.round((goal.currentSaved || 0) / goal.target * 100), 100) : 0;
+            const remaining = Math.max((goal.target || 0) - (goal.currentSaved || 0), 0);
+            const isGoalCompleted = remaining <= 0;
+            const avgContrib = contributions.length ? Math.round(totalContributed / contributions.length) : 0;
+            const highestContrib = contributions.length ? Math.max(...contributions.map(c => getContributionAmount(c, goalId))) : 0;
+            const latestContrib = contributions.length ? contributions[0] : null;
+            let estimate = '';
+            if (!isGoalCompleted && avgContrib > 0 && remaining > 0) { const daysLeft = Math.ceil(remaining / avgContrib); const estDate = new Date(); estDate.setDate(estDate.getDate() + daysLeft); estimate = `Tháng ${estDate.getMonth()+1}/${estDate.getFullYear()}`; }
+            let historyHTML = '';
+            if (contributions.length === 0) { historyHTML = '<div class="empty-state" style="padding:20px;"><div class="empty-icon">📄</div><div class="empty-title">Chưa có khoản tiết kiệm nào cho mục tiêu này.</div></div>'; }
+            else { historyHTML = '<div class="goal-detail-history-list">' + contributions.map(c => { const displayAmount = getContributionAmount(c, goalId); const statusIcon = c.status === 'pending' ? '🟡' : '🟢'; const statusText = c.status === 'pending' ? 'Chờ chuyển' : 'Đã hoàn tất'; return `<div class="goal-detail-history-item"><span class="gdhi-date">${formatDateKey(c._dateKey)}</span><span class="gdhi-amount">+${formatCurrencyDisplay(displayAmount)}</span><span class="gdhi-source">${statusIcon} ${statusText}</span></div>`; }).join('') + '</div>'; }
+            goalDetailContainer.innerHTML = `<button class="goal-detail-back" onclick="closeGoalDetail()">← Quay lại</button><div class="goal-detail-panel"><div class="goal-detail-header"><div class="goal-detail-emoji">${goal.emoji||'🎯'}</div><div class="goal-detail-name">${goal.name}</div>${isGoalCompleted?'<span class="goal-detail-completed-badge">✅ Đã hoàn thành</span>':''}</div><div class="goal-detail-progress-section"><div class="goal-detail-progress-bar"><div class="goal-detail-progress-fill${isGoalCompleted?' completed':''}" style="width:${pct}%;"></div></div><div class="goal-detail-progress-text">${pct}% hoàn thành</div></div><div class="goal-detail-stats"><div class="goal-detail-stat"><div class="gds-value">${formatCurrencyDisplay(goal.currentSaved||0)}</div><div class="gds-label">Đã tiết kiệm</div></div><div class="goal-detail-stat"><div class="gds-value">${formatCurrencyDisplay(remaining)}</div><div class="gds-label">Còn lại</div></div><div class="goal-detail-stat"><div class="gds-value">${formatCurrencyDisplay(goal.target||0)}</div><div class="gds-label">Mục tiêu</div></div><div class="goal-detail-stat"><div class="gds-value">${estimate||'—'}</div><div class="gds-label">Dự kiến hoàn thành</div></div></div><div class="goal-detail-info"><div class="goal-detail-info-row"><span class="gdir-label">Ngày tạo</span><span class="gdir-value">${formatDateKey(goal.createdDate||getTodayKey())}</span></div><div class="goal-detail-info-row"><span class="gdir-label">Cập nhật gần nhất</span><span class="gdir-value">${goal.updatedDate?formatDateKey(goal.updatedDate):'Chưa có'}</span></div></div>${goal.note?`<div class="goal-detail-note">📝 ${goal.note}</div>`:''}<div class="goal-detail-summary"><div class="gds-title">📊 Tổng quan đóng góp</div><div class="goal-detail-summary-grid"><div class="goal-detail-summary-item"><div class="gdsi-value">${contributions.length}</div><div class="gdsi-label">Lần đóng góp</div></div><div class="goal-detail-summary-item"><div class="gdsi-value">${formatCurrencyDisplay(totalContributed)}</div><div class="gdsi-label">Tổng đóng góp</div></div><div class="goal-detail-summary-item"><div class="gdsi-value">${highestContrib?formatCurrencyDisplay(highestContrib):'—'}</div><div class="gdsi-label">Lớn nhất</div></div><div class="goal-detail-summary-item"><div class="gdsi-value">${latestContrib?formatCurrencyDisplay(getContributionAmount(latestContrib, goalId)):'—'}</div><div class="gdsi-label">Gần nhất</div></div><div class="goal-detail-summary-item" style="grid-column:1/-1;"><div class="gdsi-value">${avgContrib?formatCurrencyDisplay(avgContrib):'—'}</div><div class="gdsi-label">Trung bình mỗi lần</div></div></div></div><div class="goal-detail-history"><div class="gdh-title">📋 Lịch sử đóng góp</div>${historyHTML}</div><div class="goal-detail-actions"><button class="btn btn-outline btn-sm" onclick="openEditGoalModal('${goal.id}')">✏️ Chỉnh sửa</button><button class="btn btn-danger btn-sm" onclick="openDeleteGoalModal('${goal.id}')">🗑️ Xóa</button></div></div>`;
+            document.getElementById('goalsPageContent').style.display = 'none';
+            goalDetailContainer.style.display = 'block';
+        }
+
+        function closeGoalDetail() { goalDetailContainer.style.display = 'none'; document.getElementById('goalsPageContent').style.display = 'block'; refreshAll(); }
+        function openEditGoalModal(id) { const g = getGoalById(id); if (!g) return; document.querySelectorAll('.gci-menu-dropdown').forEach(m => m.style.display = 'none'); document.getElementById('addGoalModalTitle').textContent = 'Chỉnh sửa mục tiêu'; document.getElementById('goalNameInput').value = g.name || ''; setMoneyInputValue(document.getElementById('goalTargetInput'), g.target || 0); document.getElementById('goalNoteInput').value = g.note || ''; document.getElementById('goalEmojiInput').value = g.emoji || '🎯'; document.getElementById('editGoalId').value = id; document.getElementById('saveGoalBtn').textContent = 'Cập nhật'; initEmojiPicker(); document.getElementById('addGoalModalOverlay').style.display = 'flex'; }
+        function closeAddGoalModal() { document.getElementById('addGoalModalOverlay').style.display = 'none'; }
+        function saveGoal() { const name = document.getElementById('goalNameInput').value.trim(); const target = getMoneyInputValue(document.getElementById('goalTargetInput')); if (!name || !target || target < 1000) { alert('Vui lòng nhập tên và số tiền mục tiêu hợp lệ.'); return; } const goals = getGoals(); const id = document.getElementById('editGoalId').value; const emoji = document.getElementById('goalEmojiInput').value || '🎯'; if (id) { const g = goals.find(x => x.id === id); if (g) { g.name = name; g.target = target; g.note = document.getElementById('goalNoteInput').value.trim(); g.emoji = emoji; g.updatedDate = getTodayKey(); } } else { goals.push({ id: Date.now().toString(), name, target, currentSaved: 0, note: document.getElementById('goalNoteInput').value.trim(), emoji, createdDate: getTodayKey() }); } saveGoals(goals); closeAddGoalModal(); refreshAll(); }
+        function openDeleteGoalModal(id) { document.querySelectorAll('.gci-menu-dropdown').forEach(m => m.style.display = 'none'); deleteGoalIdInput.value = id; deleteGoalModalOverlay.style.display = 'flex'; }
+        function closeDeleteGoalModal() { deleteGoalModalOverlay.style.display = 'none'; }
+        function confirmDeleteGoal() { const id = deleteGoalIdInput.value; if (!id) return; const el = document.getElementById(`goal-${id}`); if (el) el.classList.add('removing'); setTimeout(() => { const goals = getGoals().filter(g => g.id !== id); saveGoals(goals); closeDeleteGoalModal(); closeGoalDetail(); refreshAll(); }, 300); }
+
+        function openCompleteModal() { if (isCompleted) return; setMoneyInputValue(savedAmountInput, 0); savedNoteInput.value = ''; modalOverlay.style.display = 'flex'; setTimeout(() => savedAmountInput.focus(), 100); }
+        function closeModal() { modalOverlay.style.display = 'none'; }
+        function confirmSave() { const raw = getMoneyInputValue(savedAmountInput); if (!raw || raw < 0) { savedAmountInput.focus(); savedAmountInput.style.borderColor = '#EF4444'; setTimeout(() => savedAmountInput.style.borderColor = '#E5E7EB', 1500); return; } pendingSavingAmount = raw; pendingSavingNote = savedNoteInput.value.trim(); modalOverlay.style.display = 'none'; const goals = getGoals(); if (goals.length > 0) { openAllocationSheet(); } else { finalizeSaving(null); } }
+        function openAllocationSheet() { const goals = getGoals(); if (!goals.length) { finalizeSaving(null); return; } allocationList.innerHTML = goals.map(g => { const pct = g.target ? Math.min(Math.round((g.currentSaved || 0) / g.target * 100), 100) : 0; return `<div class="allocation-item"><span class="al-emoji">${g.emoji||'🎯'}</span><div class="al-info"><div class="al-name">${g.name}</div><div class="al-progress-text">${formatCurrencyDisplay(g.currentSaved||0)} / ${formatCurrencyDisplay(g.target||0)} (${pct}%)</div></div><div class="al-input-wrapper"><input type="text" class="alloc-input" data-goal-id="${g.id}" placeholder="0" inputmode="numeric" autocomplete="off" oninput="handleAllocationInput(this)" value=""><span class="al-suffix">VNĐ</span></div></div>`; }).join(''); allocationSheetOverlay.style.display = 'flex'; updateAllocationSummary(); }
+        function closeAllocationSheet() { allocationSheetOverlay.style.display = 'none'; }
+        function handleAllocationInput(inputEl) { const raw = inputEl.value; const cleaned = raw.replace(/[^\d]/g, ''); let num = parseInt(cleaned, 10); if (isNaN(num)) num = 0; inputEl.value = num > 0 ? formatCurrency(num) : ''; updateAllocationSummary(); }
+        function getAllocationInputs() { return document.querySelectorAll('.alloc-input'); }
+        function updateAllocationSummary() { const inputs = getAllocationInputs(); let totalAllocated = 0; inputs.forEach(inp => { const val = parseCurrencyInput(inp.value); totalAllocated += val; }); const remaining = pendingSavingAmount - totalAllocated; allocTotal.textContent = formatCurrencyDisplay(totalAllocated); allocRemaining.textContent = formatCurrencyDisplay(Math.abs(remaining)); if (remaining === 0) { allocRemaining.classList.add('zero'); allocRemaining.classList.remove('as-remaining'); allocConfirmBtn.disabled = false; } else { allocRemaining.classList.remove('zero'); allocRemaining.classList.add('as-remaining'); allocConfirmBtn.disabled = true; } allocRemaining.textContent = remaining >= 0 ? formatCurrencyDisplay(remaining) : '-' + formatCurrencyDisplay(Math.abs(remaining)); }
+        function confirmAllocation() { const inputs = getAllocationInputs(); const allocations = []; inputs.forEach(inp => { const goalId = inp.getAttribute('data-goal-id'); const amount = parseCurrencyInput(inp.value); if (amount > 0) { allocations.push({ goalId, amount }); } }); const totalAllocated = allocations.reduce((s, a) => s + a.amount, 0); if (totalAllocated !== pendingSavingAmount) return; closeAllocationSheet(); finalizeSavingWithAllocation(allocations); }
+        function finalizeSavingWithAllocation(allocations) { const data = { date: getTodayKey(), target: currentTarget, savedAmount: pendingSavingAmount, completed: true, note: pendingSavingNote || '', allocation: allocations }; allocations.forEach(a => { addAmountToGoal(a.goalId, a.amount); }); saveChallengeData(data); isCompleted = true; showCompletedState(data); mainCard.classList.add('pulse'); setTimeout(() => mainCard.classList.remove('pulse'), 500); refreshAll(); }
+        function finalizeSaving(goalId) { const data = { date: getTodayKey(), target: currentTarget, savedAmount: pendingSavingAmount, completed: true, note: pendingSavingNote || '', goalId: goalId || null, allocation: goalId ? [{ goalId, amount: pendingSavingAmount }] : [] }; if (goalId) { addAmountToGoal(goalId, pendingSavingAmount); } saveChallengeData(data); isCompleted = true; showCompletedState(data); mainCard.classList.add('pulse'); setTimeout(() => mainCard.classList.remove('pulse'), 500); refreshAll(); }
+
+        function showInitialState() { initialEl.style.display = 'block'; targetEl.style.display = 'none'; completedEl.style.display = 'none'; envelopeFlap.classList.remove('open'); envelopeSeal.classList.remove('hidden'); envelopeLetter.classList.remove('revealed'); isEnvelopeOpen = false; isCompleted = false; currentTarget = null; }
+        function showTargetState() { initialEl.style.display = 'none'; targetEl.style.display = 'block'; completedEl.style.display = 'none'; targetAmountDisplay.textContent = formatCurrency(currentTarget); envelopeFlap.classList.add('open'); envelopeSeal.classList.add('hidden'); envelopeLetter.classList.add('revealed'); isEnvelopeOpen = true; isCompleted = false; }
+        function showCompletedState(data) { initialEl.style.display = 'none'; targetEl.style.display = 'none'; completedEl.style.display = 'block'; completedTarget.textContent = formatCurrencyDisplay(data.target); completedSaved.textContent = formatCurrencyDisplay(data.savedAmount); const saved = data.savedAmount || 0; const tgt = data.target || 0; completedBadge.innerHTML = saved >= tgt ? '<span class="completed-badge success">✅ Đạt mục tiêu</span>' : '<span class="completed-badge recorded">💙 Đã ghi nhận</span>'; envelopeFlap.classList.add('open'); envelopeSeal.classList.add('hidden'); envelopeLetter.classList.add('revealed'); isEnvelopeOpen = true; isCompleted = true; currentTarget = data.target; }
+        function openEnvelope() { if (isEnvelopeOpen) return; const saved = loadChallengeData(); if (saved) { currentTarget = saved.target; if (saved.completed) showCompletedState(saved); else showTargetState(); refreshAll(); return; } currentTarget = generateRandomTarget(); saveChallengeData({ date: getTodayKey(), target: currentTarget, savedAmount: null, completed: false, note: '', goalId: null, allocation: [] }); envelopeFlap.classList.add('open'); envelopeSeal.classList.add('hidden'); setTimeout(() => envelopeLetter.classList.add('revealed'), 250); setTimeout(() => { showTargetState(); mainCard.classList.add('pulse'); setTimeout(() => mainCard.classList.remove('pulse'), 500); refreshAll(); }, 500); }
+
+        function getFilteredRecords() { const all = loadAllChallengeData(); const selMonth = document.getElementById('monthSelectorValue').value; const search = searchInput.value.trim().toLowerCase(); let filtered = all; if (selMonth) filtered = filtered.filter(d => { const p = d._dateKey.split('-'); if (p.length >= 2) return `${p[1]}/${p[0]}` === selMonth; return false; }); if (search) filtered = filtered.filter(d => formatDateKey(d._dateKey).toLowerCase().includes(search)); filtered.sort((a, b) => b._dateKey.localeCompare(a._dateKey)); return filtered; }
+        function updateJournalSummary(filtered) { const completed = filtered.filter(d => d.completed && d.savedAmount); const total = completed.reduce((s, d) => s + (d.savedAmount || 0), 0); const avg = completed.length ? Math.round(total / completed.length) : 0; jsDaysCount.textContent = completed.length + ' ngày'; jsTotalSaved.textContent = formatCurrencyDisplay(total); jsAverage.textContent = formatCurrencyDisplay(avg) + '/ngày'; }
+        function renderJournalRecords() { const filtered = getFilteredRecords(); updateJournalSummary(filtered); activeDropdown = null; if (!filtered.length) { journalRecords.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">Chưa có dữ liệu tiết kiệm.</div><div class="empty-desc">Hãy bắt đầu với khoản tiết kiệm đầu tiên của bạn.</div></div>'; return; } journalRecords.innerHTML = filtered.map(r => { const df = formatDateKey(r._dateKey); const tgt = r.target || 0; const sv = r.savedAmount || 0; const reached = r.completed && sv >= tgt; const bc = reached ? 'success' : 'recorded'; const bt = reached ? '✅ Đạt mục tiêu' : '💙 Đã ghi nhận'; const hasAllocation = r.allocation && r.allocation.length > 0; const goal = !hasAllocation && r.goalId ? getGoalById(r.goalId) : null; let allocationHTML = ''; if (hasAllocation) { const goals = getGoals(); allocationHTML = '<div class="jr-allocation"><div class="jra-title">📋 Đã phân bổ</div>' + r.allocation.map(a => { const g = getGoalById(a.goalId); return g ? `<div class="jra-item"><span>${g.emoji||'🎯'} ${g.name}</span><span>${formatCurrencyDisplay(a.amount)}</span></div>` : ''; }).join('') + '</div>'; } return `<div class="journal-record" id="record-${r._dateKey}"><div class="jr-header"><span class="jr-date">📅 ${df}</span><button class="jr-menu-btn" onclick="toggleDropdown(event,'${r._dateKey}')">⋮</button></div><div class="jr-row"><span class="jr-label">Mục tiêu</span><span class="jr-value">${formatCurrencyDisplay(tgt)}</span></div>${r.completed?`<div class="jr-row"><span class="jr-label">Đã tiết kiệm</span><span class="jr-value">${formatCurrencyDisplay(sv)}</span></div>`:''}${goal?`<div class="jr-row"><span class="jr-label">Mục tiêu dài hạn</span><span class="jr-value">${goal.emoji||'🎯'} ${goal.name}</span></div>`:''}${allocationHTML}${r.note?`<div class="jr-note">📝 ${r.note}</div>`:''}${r.completed?`<span class="jr-badge ${bc}">${bt}</span>`:'<span style="font-size:10px;color:var(--secondary);">Chưa hoàn thành</span>'}<div class="dropdown-menu" id="dropdown-${r._dateKey}" style="display:none;"><button onclick="openEditModal('${r._dateKey}')">✏️ Chỉnh sửa</button><button class="danger" onclick="openDeleteModal('${r._dateKey}')">🗑️ Xóa</button></div></div>`; }).join(''); }
+        function toggleDropdown(e, dk) { e.stopPropagation(); const dd = document.getElementById(`dropdown-${dk}`); if (activeDropdown && activeDropdown !== dd) activeDropdown.style.display = 'none'; if (dd.style.display === 'none' || !dd.style.display) { dd.style.display = 'block'; activeDropdown = dd; } else { dd.style.display = 'none'; activeDropdown = null; } }
+        function openEditModal(dk) { activeDropdown = null; editingDateKey = dk; const r = localStorage.getItem(`pocket_save_${dk}`); if (!r) return; try { const d = JSON.parse(r); setMoneyInputValue(editAmountInput, d.savedAmount || 0); editNoteInput.value = d.note || ''; editModalDate.textContent = `Ngày: ${formatDateKey(dk)} — Mục tiêu: ${formatCurrencyDisplay(d.target||0)}`; editModalOverlay.style.display = 'flex'; setTimeout(() => editAmountInput.focus(), 100); } catch (e) {} }
+        function closeEditModal() { editModalOverlay.style.display = 'none'; editingDateKey = null; }
+        function confirmEdit() { if (!editingDateKey) return; const newAmount = getMoneyInputValue(editAmountInput); if (!newAmount || newAmount < 0) { editAmountInput.focus(); editAmountInput.style.borderColor = '#EF4444'; setTimeout(() => editAmountInput.style.borderColor = '#E5E7EB', 1500); return; } const r = localStorage.getItem(`pocket_save_${editingDateKey}`); if (!r) return; try { const d = JSON.parse(r); const oldAmount = d.savedAmount || 0; if (d.allocation && d.allocation.length > 0) { d.allocation.forEach(a => { removeAmountFromGoal(a.goalId, a.amount); }); const totalNew = newAmount; const oldTotal = oldAmount; if (oldTotal > 0) { const ratio = totalNew / oldTotal; d.allocation.forEach(a => { const newAllocAmount = Math.round(a.amount * ratio); a.amount = newAllocAmount; addAmountToGoal(a.goalId, newAllocAmount); }); } const sumAlloc = d.allocation.reduce((s, a) => s + a.amount, 0); const diff = totalNew - sumAlloc; if (diff !== 0 && d.allocation.length > 0) { d.allocation[0].amount += diff; addAmountToGoal(d.allocation[0].goalId, diff); } } else if (d.goalId) { removeAmountFromGoal(d.goalId, oldAmount); addAmountToGoal(d.goalId, newAmount); } d.savedAmount = newAmount; d.note = editNoteInput.value.trim(); d.completed = true; saveChallengeDataForDate(editingDateKey, d); } catch (e) {} closeEditModal(); refreshAll(); }
+        function openDeleteModal(dk) { activeDropdown = null; deletingDateKey = dk; deleteModalOverlay.style.display = 'flex'; }
+        function closeDeleteModal() { deleteModalOverlay.style.display = 'none'; deletingDateKey = null; }
+        function confirmDelete() { if (!deletingDateKey) return; const el = document.getElementById(`record-${deletingDateKey}`); if (el) el.classList.add('removing'); const r = localStorage.getItem(`pocket_save_${deletingDateKey}`); if (r) { try { const d = JSON.parse(r); if (d.allocation && d.allocation.length > 0) { d.allocation.forEach(a => { removeAmountFromGoal(a.goalId, a.amount); }); } else if (d.goalId && d.savedAmount) { removeAmountFromGoal(d.goalId, d.savedAmount); } } catch (e) {} } setTimeout(() => { deleteChallengeDataForDate(deletingDateKey); closeDeleteModal(); refreshAll(); }, 300); }
+
+        function buildChartHTML(bars) { if (!bars.length) return '<div style="text-align:center;padding:20px;color:var(--secondary);font-size:12px;">Chưa có dữ liệu</div>'; const maxVal = Math.max(...bars.map(b => b.value), 1); const chartHeight = 120; return `<div class="chart-bars chart-fade">${bars.map(b=>{const h=b.value?Math.max((b.value/maxVal)*chartHeight,4):3;return`<div class="chart-bar-wrapper" onclick="toggleChartTooltip(this)" data-label="${b.label}" data-value="${formatCurrencyDisplay(b.value)}"><div class="chart-bar-tooltip">${b.label}<br>${formatCurrencyDisplay(b.value)}</div><div class="chart-bar-fill" style="height:${h}px;"></div><div class="chart-bar-label">${b.shortLabel||b.label}</div></div>`}).join('')}</div>`; }
+        function toggleChartTooltip(el) { const wasActive = el.classList.contains('active'); document.querySelectorAll('.chart-bar-wrapper.active').forEach(w => w.classList.remove('active')); if (!wasActive) el.classList.add('active'); }
+        function getChartDataForPeriod(period) { const all = loadAllChallengeData(); const completed = all.filter(d => d.completed && d.savedAmount); const now = new Date(); if (period === '7days') { const bars = []; for (let i = 6; i >= 0; i--) { const d = new Date(now); d.setDate(d.getDate() - i); const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; const val = completed.filter(r => r._dateKey === key).reduce((s, r) => s + r.savedAmount, 0); bars.push({ label: formatDateKey(key), shortLabel: `${d.getDate()}/${d.getMonth()+1}`, value: val }); } return bars; } if (period === 'month') { const year = now.getFullYear(); const month = now.getMonth(); const daysInMonth = new Date(year, month + 1, 0).getDate(); const weeks = []; let weekStart = 1; let weekNum = 1; for (let day = 1; day <= daysInMonth; day++) { const d = new Date(year, month, day); const dayOfWeek = d.getDay(); if (dayOfWeek === 0 && day > 1) { const weekEnd = day - 1; let val = 0; for (let wd = weekStart; wd <= weekEnd; wd++) { const key = `${year}-${String(month+1).padStart(2,'0')}-${String(wd).padStart(2,'0')}`; val += completed.filter(r => r._dateKey === key).reduce((s, r) => s + r.savedAmount, 0); } weeks.push({ label: `Tuần ${weekNum}`, shortLabel: `T${weekNum}`, value: val }); weekStart = day; weekNum++; } } if (weekStart <= daysInMonth) { let val = 0; for (let wd = weekStart; wd <= daysInMonth; wd++) { const key = `${year}-${String(month+1).padStart(2,'0')}-${String(wd).padStart(2,'0')}`; val += completed.filter(r => r._dateKey === key).reduce((s, r) => s + r.savedAmount, 0); } weeks.push({ label: `Tuần ${weekNum}`, shortLabel: `T${weekNum}`, value: val }); } return weeks; } if (period === 'year') { const year = now.getFullYear(); const bars = []; for (let m = 0; m < 12; m++) { const monthPrefix = `${year}-${String(m+1).padStart(2,'0')}`; let val = 0; for (const r of completed) { if (r._dateKey.startsWith(monthPrefix)) val += r.savedAmount; } bars.push({ label: `Tháng ${m+1}`, shortLabel: `T${m+1}`, value: val }); } return bars; } return []; }
+        function renderChart() { const bars = getChartDataForPeriod(chartPeriod); const chartHTML = buildChartHTML(bars); const existingChart = document.getElementById('chartContainer'); if (existingChart) existingChart.innerHTML = chartHTML; setTimeout(() => { document.querySelectorAll('.chart-bar-fill').forEach(b => { const h = b.style.height; b.style.height = '0px'; requestAnimationFrame(() => { b.style.height = h; }); }); }, 50); }
+        function switchChartPeriod(period) { chartPeriod = period; document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active')); document.querySelector(`.chart-tab[data-period="${period}"]`).classList.add('active'); renderChart(); }
+        function renderAnalytics() { const all = loadAllChallengeData(); const completed = all.filter(d => d.completed && d.savedAmount); if (!completed.length) { analyticsContent.innerHTML = '<div class="empty-state"><div class="empty-icon">📊</div><div class="empty-title">Dữ liệu sẽ xuất hiện khi bạn bắt đầu tiết kiệm.</div><div class="empty-desc">Hãy hoàn thành thử thách đầu tiên của bạn.</div></div>'; return; } const totalSaved = completed.reduce((s, d) => s + d.savedAmount, 0); const avgDaily = Math.round(totalSaved / completed.length); const highest = completed.reduce((mx, d) => Math.max(mx, d.savedAmount), 0); const highestDay = completed.find(d => d.savedAmount === highest); const dayCounts = [0, 0, 0, 0, 0, 0, 0]; completed.forEach(d => { const date = new Date(d._dateKey + 'T00:00:00'); dayCounts[date.getDay()] += d.savedAmount; }); const bestDayIdx = dayCounts.indexOf(Math.max(...dayCounts)); const dayNames = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy']; const now = new Date(); const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`; const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1); const lastMonth = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth()+1).padStart(2,'0')}`; const thisMonthData = completed.filter(d => d._dateKey.startsWith(thisMonth)); const lastMonthData = completed.filter(d => d._dateKey.startsWith(lastMonth)); const thisMonthTotal = thisMonthData.reduce((s, d) => s + d.savedAmount, 0); const lastMonthTotal = lastMonthData.reduce((s, d) => s + d.savedAmount, 0); const monthChange = lastMonthTotal > 0 ? Math.round(((thisMonthTotal - lastMonthTotal) / lastMonthTotal) * 100) : 0; analyticsContent.innerHTML = `<div class="insight-row"><div class="insight-icon">📅</div><div class="insight-content"><div class="insight-value">Tháng này bạn đã tiết kiệm <strong>${formatCurrencyDisplay(thisMonthTotal)}</strong></div><div class="insight-label">${monthChange>0?'↑':monthChange<0?'↓':''} ${Math.abs(monthChange)}% so với tháng trước</div></div></div>${highestDay?`<div class="insight-row"><div class="insight-icon">🏆</div><div class="insight-content"><div class="insight-value">Khoản tiết kiệm lớn nhất: <strong>${formatCurrencyDisplay(highest)}</strong></div><div class="insight-label">Ngày ${formatDateKey(highestDay._dateKey)}</div></div></div>`:''}<div class="insight-row"><div class="insight-icon">📊</div><div class="insight-content"><div class="insight-value">Bạn thường tiết kiệm nhiều nhất vào <strong>${dayNames[bestDayIdx]}</strong></div><div class="insight-label">Dựa trên dữ liệu đã ghi nhận</div></div></div><div class="insight-row"><div class="insight-icon">💰</div><div class="insight-content"><div class="insight-value">Số tiền tiết kiệm trung bình: <strong>${formatCurrencyDisplay(avgDaily)}/ngày</strong></div><div class="insight-label">Qua ${completed.length} ngày tiết kiệm</div></div></div><div class="insight-row"><div class="insight-icon">🔥</div><div class="insight-content"><div class="insight-value">Bạn đã duy trì thói quen tiết kiệm <strong>${completed.length} ngày</strong></div><div class="insight-label">Tiếp tục phát huy!</div></div></div><div class="chart-card"><div style="font-size:13px;font-weight:700;margin-bottom:8px;text-align:left;">📊 Biểu đồ thống kê</div><div class="chart-tabs"><button class="chart-tab active" data-period="7days" onclick="switchChartPeriod('7days')">Ngày</button><button class="chart-tab" data-period="month" onclick="switchChartPeriod('month')">Tháng</button><button class="chart-tab" data-period="year" onclick="switchChartPeriod('year')">Năm</button></div><div id="chartContainer">${buildChartHTML(getChartDataForPeriod('7days'))}</div></div>`; setTimeout(() => { document.querySelectorAll('.chart-bar-fill').forEach(b => { const h = b.style.height; b.style.height = '0px'; requestAnimationFrame(() => { b.style.height = h; }); }); }, 100); }
+
+        function refreshAll() { updateDashboard(); renderGoals(); renderAnalytics(); renderJournalRecords(); renderRecentActivity(); }
+        function init() { const now = new Date(); $('dayName').textContent = getDayName(now); $('dateString').textContent = getDateString(now); motivationalText.textContent = getRandomMotivationalText(); const saved = loadChallengeData(); if (saved) { currentTarget = saved.target; isEnvelopeOpen = true; if (saved.completed) { isCompleted = true; showCompletedState(saved); } else showTargetState(); } else showInitialState(); applyTheme(getTheme()); refreshAll(); switchPage('home'); }
+
+        modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeModal(); });
+        allocationSheetOverlay.addEventListener('click', e => { if (e.target === allocationSheetOverlay) closeAllocationSheet(); });
+        document.getElementById('addGoalModalOverlay').addEventListener('click', e => { if (e.target === document.getElementById('addGoalModalOverlay')) closeAddGoalModal(); });
+        deleteGoalModalOverlay.addEventListener('click', e => { if (e.target === deleteGoalModalOverlay) closeDeleteGoalModal(); });
+        editModalOverlay.addEventListener('click', e => { if (e.target === editModalOverlay) closeEditModal(); });
+        deleteModalOverlay.addEventListener('click', e => { if (e.target === deleteModalOverlay) closeDeleteModal(); });
+        document.addEventListener('click', () => { document.querySelectorAll('.gci-menu-dropdown').forEach(m => m.style.display = 'none'); if (activeDropdown) { activeDropdown.style.display = 'none'; activeDropdown = null; } });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeAllocationSheet(); closeAddGoalSheet(); closeMonthPicker(); closeAddGoalModal(); closeDeleteGoalModal(); closeEditModal(); closeDeleteModal(); } if (e.key === 'Enter') { if (modalOverlay.style.display === 'flex') confirmSave(); if (editModalOverlay.style.display === 'flex') confirmEdit(); } });
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('service-worker.js').then(registration => { console.log('Service Worker registered with scope:', registration.scope); }).catch(error => { console.log('Service Worker registration failed:', error); }); }); }
+        init();
+    </script>
+  </body>
+  </html>
