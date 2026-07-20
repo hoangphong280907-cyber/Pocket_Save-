@@ -1,7 +1,7 @@
 const CACHE_NAME="pocket-save-v3";
 
 const urlsToCache = [
-  "./",
+  "./?v=3",
   "./index.html",
   "./manifest.json",
   "./icon-192.png",
